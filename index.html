@@ -143,6 +143,7 @@ select.fs:focus{border-color:var(--gm)}
 .fbox .csd-btn{padding:11px 14px;border-radius:10px;font-size:13px}
 .freset{width:38px;height:38px;border-radius:50%;border:1.5px solid #fde68a;color:#f59e0b;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#fff;flex-shrink:0;transition:all .15s}
 .freset:hover{background:#fff7ed;transform:rotate(-45deg)}
+.tt2{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 20px;border-bottom:1px solid var(--bo)}
 .a-thumb{width:56px;height:56px;border-radius:12px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--gd);font-size:20px;overflow:hidden;flex-shrink:0}
 .a-thumb img{width:100%;height:100%;object-fit:cover}
 .cfg-chip{display:inline-block;background:var(--bg);border:1px solid var(--bo);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--tx);margin:2px 4px 2px 0}
@@ -405,19 +406,25 @@ body.theme-rose .modal{background:#fff7f9}
         <div class="ph"><div><div class="pt">Class List</div><div class="bc"><span>Dashboard</span><span class="material-icons bc-dot">fiber_manual_record</span><span class="ac">Class List</span></div></div>
           <button class="btn-c" onclick="openCreate('class')"><span class="material-icons">add</span>Create New Class</button></div>
         <div class="tc">
-          <div class="tt">
+          <div class="tt2">
             <div class="sw2"><span class="material-icons">search</span><input type="text" placeholder="Type to Search..." oninput="doSearch('class',this.value)"/></div>
-            <span class="flbl">Filter</span>
-            <div class="fgp"><label>Year</label><div class="csd" id="f-class-year"></div></div>
-            <div class="fgp"><label>Campus</label><div class="csd" id="f-class-campus"></div></div>
             <div class="tr2">
+              <div class="ib" title="Toggle filters" onclick="toggleFP('fpanel-class',this)"><span class="material-icons">tune</span></div>
+              <div class="ib" title="Collapse" onclick="toggleFP('fpanel-class',this)"><span class="material-icons">expand_less</span></div>
               <div class="ib xl" title="Export CSV" onclick="exportCSV('class')"><span class="material-icons">table_view</span></div>
               <div class="ib" onclick="changePage('class',-1)"><span class="material-icons">arrow_back</span></div>
               <div class="ib" onclick="changePage('class',1)"><span class="material-icons">arrow_forward</span></div>
-              <div class="ib ref" onclick="doRefresh('class',this)"><span class="material-icons">refresh</span></div>
             </div>
           </div>
-          <div class="tw"><table><thead><tr><th>#</th><th>Year</th><th>Campus</th><th>Thumbnail</th><th>Code</th><th>QR</th><th>Class</th><th>SMS Status</th><th>Students</th><th>Created By</th><th>Created At ↓</th><th>Action</th></tr></thead><tbody id="tb-class"></tbody></table></div>
+          <div class="fpanel" id="fpanel-class">
+            <div class="fpanel-title">Filter</div>
+            <div class="fpanel-row">
+              <div class="fbox"><label>Year</label><div class="csd" id="f-class-year"></div></div>
+              <div class="fbox"><label>Campus</label><div class="csd" id="f-class-campus"></div></div>
+              <div class="freset" title="Reset filters" onclick="doRefresh('class',this)"><span class="material-icons">refresh</span></div>
+            </div>
+          </div>
+          <div class="tw"><table><thead><tr><th>#</th><th>Year</th><th>Campus</th><th>Thumbnail</th><th>Code</th><th>QR</th><th>Class</th><th>SMS Class Info.</th><th>Total Students</th><th>Created By</th><th>Created At ↓</th><th>Action</th></tr></thead><tbody id="tb-class"></tbody></table></div>
           <div class="pw2"><div class="pf" id="pf-class" style="width:0"></div></div>
           <div class="pg" id="pg-class"></div>
         </div>
@@ -470,7 +477,17 @@ body.theme-rose .modal{background:#fff7f9}
         <div class="ph"><div><div class="pt">Assessment List</div><div class="bc"><span>Dashboard</span><span class="material-icons bc-dot">fiber_manual_record</span><span class="ac">Assessment List</span></div></div>
           <button class="btn-c" onclick="openCreate('assessment')"><span class="material-icons">add</span>Create New Assessment</button></div>
         <div class="tc">
-          <div class="fpanel">
+          <div class="tt2">
+            <div class="sw2"><span class="material-icons">search</span><input type="text" placeholder="Type to Search..." oninput="doSearch('assessment',this.value)"/></div>
+            <div class="tr2">
+              <div class="ib" title="Toggle filters" onclick="toggleFP('fpanel-assessment',this)"><span class="material-icons">tune</span></div>
+              <div class="ib" title="Collapse" onclick="toggleFP('fpanel-assessment',this)"><span class="material-icons">expand_less</span></div>
+              <div class="ib xl" title="Export CSV" onclick="exportCSV('assessment')"><span class="material-icons">table_view</span></div>
+              <div class="ib" onclick="changePage('assessment',-1)"><span class="material-icons">arrow_back</span></div>
+              <div class="ib" onclick="changePage('assessment',1)"><span class="material-icons">arrow_forward</span></div>
+            </div>
+          </div>
+          <div class="fpanel" id="fpanel-assessment">
             <div class="fpanel-title">Filter</div>
             <div class="fpanel-row">
               <div class="fbox"><label>Year</label><div class="csd" id="f-ass-year"></div></div>
@@ -481,10 +498,6 @@ body.theme-rose .modal{background:#fff7f9}
             </div>
             <div class="fpanel-row" style="margin-top:14px">
               <div class="fbox" style="max-width:260px"><label>Lesson</label><div class="csd" id="f-ass-lesson"></div></div>
-              <div class="sw2" style="margin-left:auto;flex:0 0 240px"><span class="material-icons">search</span><input type="text" placeholder="Type to Search..." oninput="doSearch('assessment',this.value)"/></div>
-              <div class="ib xl" onclick="exportCSV('assessment')" title="Export CSV"><span class="material-icons">table_view</span></div>
-              <div class="ib" onclick="changePage('assessment',-1)"><span class="material-icons">arrow_back</span></div>
-              <div class="ib" onclick="changePage('assessment',1)"><span class="material-icons">arrow_forward</span></div>
             </div>
           </div>
           <div class="tw"><table><thead><tr><th>Thumbnail</th><th>Assessment</th><th>Configuration</th><th>Valid State</th><th>Created At</th><th>Shift</th><th>Action</th></tr></thead><tbody id="tb-assessment"></tbody></table></div>
@@ -498,20 +511,30 @@ body.theme-rose .modal{background:#fff7f9}
         <div class="ph"><div><div class="pt">Question List</div><div class="bc"><span>Dashboard</span><span class="material-icons bc-dot">fiber_manual_record</span><span class="ac">Question List</span></div></div>
           <button class="btn-c" onclick="nav('question-wizard')"><span class="material-icons">add</span>Create New Question</button></div>
         <div class="tc">
-          <div class="tt">
+          <div class="tt2">
             <div class="sw2"><span class="material-icons">search</span><input type="text" placeholder="Type to Search..." oninput="doSearch('question',this.value)"/></div>
-            <span class="flbl">Filter</span>
-            <div class="fgp"><label>Class</label><div class="csd" id="f-q-class"></div></div>
-            <div class="fgp"><label>Subject</label><div class="csd" id="f-q-subject"></div></div>
-            <div class="fgp"><label>Assessment</label><div class="csd" id="f-q-assessment"></div></div>
             <div class="tr2">
-              <div class="ib xl" onclick="exportCSV('question')"><span class="material-icons">table_view</span></div>
+              <div class="ib" title="Toggle filters" onclick="toggleFP('fpanel-question',this)"><span class="material-icons">tune</span></div>
+              <div class="ib" title="Collapse" onclick="toggleFP('fpanel-question',this)"><span class="material-icons">expand_less</span></div>
+              <div class="ib xl" title="Export CSV" onclick="exportCSV('question')"><span class="material-icons">table_view</span></div>
               <div class="ib" onclick="changePage('question',-1)"><span class="material-icons">arrow_back</span></div>
               <div class="ib" onclick="changePage('question',1)"><span class="material-icons">arrow_forward</span></div>
-              <div class="ib ref" onclick="doRefresh('question',this)"><span class="material-icons">refresh</span></div>
             </div>
           </div>
-          <div class="tw"><table><thead><tr><th>#</th><th>Class</th><th>Subject</th><th>Lesson</th><th>Assessment</th><th>Question</th><th>Type</th><th>Points</th><th>Created By</th><th>Created At ↓</th><th>Action</th></tr></thead><tbody id="tb-question"></tbody></table></div>
+          <div class="fpanel" id="fpanel-question">
+            <div class="fpanel-title">Filter</div>
+            <div class="fpanel-row">
+              <div class="fbox"><label>Year</label><div class="csd" id="f-q-year"></div></div>
+              <div class="fbox"><label>Class</label><div class="csd" id="f-q-class"></div></div>
+              <div class="fbox"><label>Subject</label><div class="csd" id="f-q-subject"></div></div>
+              <div class="fbox"><label>Lesson</label><div class="csd" id="f-q-lesson"></div></div>
+              <div class="freset" title="Reset filters" onclick="doRefresh('question',this)"><span class="material-icons">refresh</span></div>
+            </div>
+            <div class="fpanel-row" style="margin-top:14px">
+              <div class="fbox" style="max-width:260px"><label>Assessment</label><div class="csd" id="f-q-assessment"></div></div>
+            </div>
+          </div>
+          <div class="tw"><table><thead><tr><th>#</th><th>Year</th><th>Class</th><th>Subject</th><th>Lesson</th><th>Assessment</th><th>Title</th><th>Type</th><th>Created By</th><th>Created At ↓</th><th>Action</th></tr></thead><tbody id="tb-question"></tbody></table></div>
           <div class="pw2"><div class="pf" id="pf-question" style="width:0"></div></div>
           <div class="pg" id="pg-question"></div>
         </div>
@@ -1056,6 +1079,20 @@ function nav(pid, el){
 }
 
 // ── FILTER DROPDOWNS
+function qTypeLabel(t){
+  const map={'MCQ':'SINGLE_CHOICE','True/False':'TRUE_FALSE','Dropdown':'DROPDOWN','Gap Fill':'FILL_BLANK','Short Answer':'SHORT_ANSWER'};
+  return map[t]||(t||'SINGLE_CHOICE').toUpperCase().replace(/\s+/g,'_');
+}
+function toggleFP(panelId, btn){
+  const panel=document.getElementById(panelId);
+  if(!panel) return;
+  const willHide = panel.style.display!=='none';
+  panel.style.display = willHide ? 'none' : '';
+  const row = btn.closest('.tr2') || btn.parentElement;
+  if(row) row.querySelectorAll('.material-icons').forEach(ic=>{
+    if(ic.textContent==='expand_less'||ic.textContent==='expand_more') ic.textContent = willHide ? 'expand_more' : 'expand_less';
+  });
+}
 function refreshFilters(){
   const cls=DB.get('classs'), subs=DB.get('subjects');
   const les=DB.get('lessons'), ass=DB.get('assessments');
@@ -1081,11 +1118,15 @@ function refreshFilters(){
   csdOn('f-ass-subject', ()=>renderT('assessment'));
   csdOn('f-ass-lesson',  ()=>renderT('assessment'));
   // Question filters
+  fillVals('f-q-year', [...new Set(cls.map(c=>c.year).filter(Boolean))], 'All Years');
   fillRef('f-q-class',      cls,  'All Classes');
   fillRef('f-q-subject',    subs, 'All Subjects');
+  fillRef('f-q-lesson',     les,  'All Lessons');
   fillRef('f-q-assessment', ass,  'All Assessments');
+  csdOn('f-q-year',       ()=>renderT('question'));
   csdOn('f-q-class',      ()=>{ onTbFilterClass('q'); renderT('question'); });
   csdOn('f-q-subject',    ()=>renderT('question'));
+  csdOn('f-q-lesson',     ()=>renderT('question'));
   csdOn('f-q-assessment', ()=>renderT('question'));
   // Student filter
   fillRef('f-st-class', cls, 'All Classes');
@@ -1097,10 +1138,10 @@ function onTbFilterClass(pg){
   const cl = csdVal('f-'+pg+'-class');
   const subs = cl ? DB.get('subjects').filter(s=>s.classId===cl) : DB.get('subjects');
   fillRef('f-'+pg+'-subject', subs, 'All Subjects');
-  if(pg==='ass'){
-    const sub = csdVal('f-ass-subject');
+  if(pg==='ass'||pg==='q'){
+    const sub = csdVal('f-'+pg+'-subject');
     const les = sub ? DB.get('lessons').filter(l=>l.subjectId===sub) : (cl ? DB.get('lessons').filter(l=>l.classId===cl) : DB.get('lessons'));
-    fillRef('f-ass-lesson', les, 'All Lessons');
+    fillRef('f-'+pg+'-lesson', les, 'All Lessons');
   }
 }
 
@@ -1133,9 +1174,14 @@ function getFiltered(type){
     if(le) data=data.filter(r=>r.lessonId===le);
   }
   if(type==='question'){
-    const cl=csdVal('f-q-class'), su=csdVal('f-q-subject'), as=csdVal('f-q-assessment');
+    const yr=csdVal('f-q-year'), cl=csdVal('f-q-class'), su=csdVal('f-q-subject'), le=csdVal('f-q-lesson'), as=csdVal('f-q-assessment');
+    if(yr){
+      const clsMap={}; DB.get('classs').forEach(c=>clsMap[c.id]=c);
+      data=data.filter(r=>clsMap[r.classId]?.year===yr);
+    }
     if(cl) data=data.filter(r=>r.classId===cl);
     if(su) data=data.filter(r=>r.subjectId===su);
+    if(le) data=data.filter(r=>r.lessonId===le);
     if(as) data=data.filter(r=>r.assessmentId===as);
   }
   if(type==='student'){ const cl=csdVal('f-st-class'); if(cl) data=data.filter(r=>r.classId===cl); }
@@ -1170,9 +1216,12 @@ function rowHTML(type,r,n){
   const viewBtn = (type==='assessment'||type==='question') ? `<div class="ib" title="View" onclick="openViewModal('${type}','${r.id}')"><span class="material-icons">visibility</span></div>` : '';
   const qManageBtn = type==='assessment' ? `<div class="ib" title="Manage Questions" onclick="qwizOpenForAssessment('${r.id}')"><span class="material-icons">quiz</span></div>` : '';
   const canAct  = canEdit(r);
-  const editBtn = canAct ? `<div class="ib" title="Edit" onclick="openEdit('${type}','${r.id}')"><span class="material-icons">edit</span></div>` : '';
-  const delBtn  = canAct ? `<div class="ib del" title="Delete" onclick="confirmDel('${type}','${r.id}','${esc(r.name||r.username||'')}')"><span class="material-icons">delete</span></div>` : '';
-  const ac=`<div class="ab">${viewBtn}${qManageBtn}${copyBtn}${editBtn}${delBtn}</div>`;
+  const editBtn = (canAct && type!=='question') ? `<div class="ib" title="Edit" onclick="openEdit('${type}','${r.id}')"><span class="material-icons">edit</span></div>` : '';
+  const delBtn  = (canAct && type!=='question') ? `<div class="ib del" title="Delete" onclick="confirmDel('${type}','${r.id}','${esc(r.name||r.username||'')}')"><span class="material-icons">delete</span></div>` : '';
+  const linkBtn = type==='class' ? `<div class="ib" title="Copy Class Link" onclick="copyClassLink('${r.id}')"><span class="material-icons">link</span></div>` : '';
+  const classCopyBtn = type==='class' ? `<div class="ib" title="Duplicate Class" onclick="duplicateClass('${r.id}')"><span class="material-icons">content_copy</span></div>` : '';
+  const classViewBtn = type==='class' ? `<div class="ib" title="View" onclick="openViewModal('class','${r.id}')"><span class="material-icons">visibility</span></div>` : '';
+  const ac=`<div class="ab">${viewBtn}${classViewBtn}${qManageBtn}${copyBtn}${linkBtn}${classCopyBtn}${editBtn}${delBtn}</div>`;
   if(type==='class')      return`<tr><td>${n}</td><td>${r.year||'—'}</td><td>${r.campus||'—'}</td><td><div class="thumbi"><span class="material-icons">image</span></div></td><td><span class="code">${r.code||'—'}</span></td><td><button class="qrb" onclick="showQR('${esc(r.code||r.id)}','${esc(r.name)}')"><span class="material-icons">qr_code_2</span></button></td><td><strong>${r.name}</strong></td><td><span class="chip ${r.smsInfo==='Active'?'cg':'co'}">${r.smsInfo||'Active'}</span></td><td><strong>${r.totalStudents||0}</strong></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
   if(type==='subject')    return`<tr><td>${n}</td><td>${r.className||'—'}</td><td><strong>${r.name}</strong></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
   if(type==='lesson')     return`<tr><td>${n}</td><td>${r.className||'—'}</td><td>${r.subjectName||'—'}</td><td><strong>${r.name}</strong></td><td><span class="chip cb2">${r.ordinal||1}</span></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
@@ -1209,7 +1258,11 @@ function rowHTML(type,r,n){
       <td>${ac}</td>
     </tr>`;
   }
-  if(type==='question'){ const qtitle=stripHtml(r.title||''); return`<tr><td>${n}</td><td>${r.className||'—'}</td><td>${r.subjectName||'—'}</td><td>${r.lessonName||'—'}</td><td>${r.assessmentName||'—'}</td><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><strong>${qtitle}</strong></td><td><span class="chip ${r.type==='MCQ'?'cb2':'co'}">${r.type||'MCQ'}</span></td><td><strong>${r.points||1}</strong></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`; }
+  if(type==='question'){
+    const qtitle=stripHtml(r.title||'');
+    const yr = DB.get('classs').find(c=>c.id===r.classId)?.year || '—';
+    return`<tr><td>${n}</td><td>${yr}</td><td>${r.className||'—'}</td><td>${r.subjectName||'—'}</td><td>${r.lessonName||'—'}</td><td>${r.assessmentName||'—'}</td><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><strong>${qtitle}</strong></td><td><span class="chip ${r.type==='MCQ'?'cb2':'co'}">${qTypeLabel(r.type)}</span></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
+  }
   if(type==='student')    return`<tr><td>${n}</td><td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:var(--gd);flex-shrink:0">${(r.name||'?')[0].toUpperCase()}</div><strong>${r.name||'—'}</strong></div></td><td><span class="code">${r.username||'—'}</span></td><td style="font-size:12px;color:var(--mu)">${r.email||'—'}</td><td>${r.className||'—'}</td><td><span class="chip ${r.status==='Active'?'cg':'co'}">${r.status||'Active'}</span></td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td><div class="ab"><div class="ib" title="Edit" onclick="openEdit('student','${r.id}')"><span class="material-icons">edit</span></div><div class="ib" title="Reset Password" onclick="showResetPw('${r.id}')"><span class="material-icons">lock_reset</span></div><div class="ib del" title="Delete" onclick="confirmDel('student','${r.id}','${esc(r.name||'')}')"><span class="material-icons">delete</span></div></div></td></tr>`;
 }
 function esc(s){ return String(s||'').replace(/['"<>&]/g,c=>({'\'':'&#39;','"':'&quot;','<':'&lt;','>':'&gt;','&':'&amp;'}[c])); }
@@ -2387,6 +2440,30 @@ function openViewModal(type, id){
   const body    = document.getElementById('vm-body');
   const LETTERS = 'ABCDEFGH';
 
+  if(type === 'class'){
+    const c = DB.get('classs').find(r=>r.id===id);
+    if(!c){ toast('Not found','err'); return; }
+    document.getElementById('vm-title').textContent = 'Class Detail';
+    const subCount = DB.get('subjects').filter(s=>s.classId===id).length;
+    body.innerHTML = `
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin:16px 0">
+        <span class="chip cg">${c.year||'—'}</span>
+        <span class="chip cb2">${c.campus||'—'}</span>
+      </div>
+      <div style="font-size:18px;font-weight:800;margin-bottom:14px">${c.name||'(unnamed class)'}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
+        <div><strong>Code:</strong> ${c.code||'—'}</div>
+        <div><strong>Total Students:</strong> ${c.totalStudents||0}</div>
+        <div><strong>Subjects:</strong> ${subCount}</div>
+        <div><strong>SMS Status:</strong> ${c.smsInfo||'Active'}</div>
+        <div><strong>Created By:</strong> ${c.createdBy||'Admin'}</div>
+        <div><strong>Created At:</strong> ${c.createdAt||'—'}</div>
+      </div>`;
+    document.getElementById('view-overlay').style.display='flex';
+    setTimeout(()=>document.getElementById('view-overlay').classList.add('open'),10);
+    return;
+  }
+
   if(type === 'question'){
     const q = DB.get('questions').find(r=>r.id===id);
     if(!q){ toast('Not found','err'); return; }
@@ -2581,6 +2658,29 @@ function confirmDelTeacher(id, name){
 // ══════════════════════════════════════════════════════
 let copySourceId = null;
 
+async function duplicateClass(id){
+  const c = DB.get('classs').find(x=>x.id===id);
+  if(!c){ toast('Class not found','err'); return; }
+  const newId = DB.uid();
+  const copy = {...c, id:newId, name:(c.name||'Class')+' - Copy', code:String(Math.floor(10000+Math.random()*90000)),
+    totalStudents:0, createdAt:new Date().toLocaleDateString(), createdBy:CURRENT_USER?.name||'Admin'};
+  try{
+    await dbSet('classs', newId, copy);
+    await loadAll();
+    renderT('class');
+    toast('Class duplicated as "'+copy.name+'"');
+  } catch(e){ toast('Duplicate failed: '+e.message,'err'); }
+}
+function copyClassLink(id){
+  const c = DB.get('classs').find(x=>x.id===id);
+  if(!c){ toast('Class not found','err'); return; }
+  const link = `${location.origin}${location.pathname}?class=${c.code||id}`;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(link).then(()=>toast('Class link copied!')).catch(()=>toast('Could not copy link — try again','err'));
+  } else {
+    toast('Class link: '+link);
+  }
+}
 function openCopyAssessment(assessmentId){
   copySourceId = assessmentId;
   const ass = DB.get('assessments').find(a=>a.id===assessmentId);
