@@ -227,7 +227,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <div class="topbar">
     <div class="tb-title" id="dash-title">My Dashboard</div>
     <button id="sp-lang-toggle" onclick="toggleLang()" style="margin-left:auto;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:8px;padding:3px 10px;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:700;color:#fff;display:flex;align-items:center;gap:5px">
-      <span id="sp-lang-flag">🇰🇭</span><span id="sp-lang-label">ខ្មែរ</span>
+      <span class="material-icons" id="sp-lang-flag" style="font-size:16px">language</span><span id="sp-lang-label">ខ្មែរ</span>
     </button>
     <div class="avatar-sm" id="dash-avatar">S</div>
     <button class="tb-back" onclick="studentLogout()" title="Logout">
@@ -920,7 +920,7 @@ function applyLang(){
   translateDOM(document.body);
   const flag = document.getElementById('sp-lang-flag');
   const lbl  = document.getElementById('sp-lang-label');
-  if(flag) flag.textContent = LANG==='km' ? '🇺🇸' : '🇰🇭';
+  // sp-lang-flag now uses a static Material Icon (language) — no flag glyph to swap
   if(lbl)  lbl.textContent  = LANG==='km' ? 'English' : 'ខ្មែរ';
   localStorage.setItem('lms_lang', LANG);
 }
