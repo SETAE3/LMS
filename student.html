@@ -51,7 +51,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .tb-title{font-size:16px;font-weight:700;flex:1}
 .avatar-sm{width:34px;height:34px;border-radius:50%;background:var(--g-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0}
 .hero{background:linear-gradient(135deg,var(--g-dark),var(--g-mid));color:#fff;padding:24px 20px 32px;position:relative;overflow:hidden}
-.hero::after{content:'🎓';position:absolute;right:-10px;top:-10px;font-size:100px;opacity:.1}
+.hero::after{content:'school';font-family:'Material Icons';position:absolute;right:-10px;top:-10px;font-size:100px;opacity:.1}
 .hero h2{font-size:1.4rem;font-weight:800;margin-bottom:4px}
 .hero p{font-size:13px;opacity:.8}
 .hero-stats{display:flex;gap:12px;margin-top:18px}
@@ -127,7 +127,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 /* ── RESULTS ── */
 #s-result{background:var(--bg);align-items:center;justify-content:center;padding:24px;text-align:center}
 .result-card{background:#fff;border-radius:24px;padding:36px 28px;width:100%;max-width:400px;box-shadow:var(--shadow);animation:pop .4s ease}
-.result-emoji{font-size:64px;margin-bottom:16px;display:block;animation:bounce 1s ease .3s both}
+.result-emoji{font-size:64px;margin-bottom:16px;display:block;animation:bounce 1s ease .3s both;color:var(--g-mid)}
 @keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
 .result-score{font-size:4rem;font-weight:800;color:var(--g-dark);line-height:1}
 .result-max{font-size:1.1rem;font-weight:500;color:var(--muted)}
@@ -199,7 +199,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
       <div class="sl-icon"><span class="material-icons">school</span></div>
       <div class="sl-text"><strong>American Intercon</strong><span>Student Portal</span></div>
     </div>
-    <h2>Welcome, Student! 👋</h2>
+    <h2><span class="material-icons" style="vertical-align:middle;font-size:1.2rem">waving_hand</span> Welcome, Student!</h2>
     <p>Sign in to access your classes and assessments</p>
     <div class="lf-group">
       <label>Username</label>
@@ -211,12 +211,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
       <span class="material-icons fi">lock</span>
       <input type="password" id="s-pw" placeholder="Enter your password" onkeydown="if(event.key==='Enter')studentLogin()"/>
     </div>
-    <div class="err" id="s-err">❌ Incorrect username or password.</div>
+    <div class="err" id="s-err"><span class="material-icons" style="font-size:15px;vertical-align:middle">error</span> Incorrect username or password.</div>
     <button class="btn-login" onclick="studentLogin()">
       <span class="material-icons">login</span> Sign In
     </button>
     <div class="demo-hint">
-      <strong>🔑 Login with your credentials</strong>
+      <strong><span class="material-icons" style="font-size:15px;vertical-align:middle">vpn_key</span> Login with your credentials</strong>
       <div style="margin-top:5px;opacity:.85">Your username and password are provided by your teacher.</div>
     </div>
   </div>
@@ -272,7 +272,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 <!-- RESULTS -->
 <div class="screen" id="s-result">
   <div class="result-card">
-    <span class="result-emoji" id="r-emoji">🎉</span>
+    <span class="result-emoji material-icons" id="r-emoji">celebration</span>
     <div class="result-score" id="r-score">0</div>
     <div class="result-max" id="r-max">/ 0 points</div>
     <div class="result-pct" id="r-pct">0%</div>
@@ -406,7 +406,7 @@ function loadDashboard(){
   const st=currentStudent;
   document.getElementById('dash-title').textContent=st.name.split(' ')[0]+"'s Dashboard";
   document.getElementById('dash-avatar').textContent=st.name[0].toUpperCase();
-  document.getElementById('hero-name').textContent='Hello, '+st.name+'! 👋';
+  document.getElementById('hero-name').innerHTML='Hello, '+escGF(st.name)+'! <span class="material-icons" style="font-size:1rem;vertical-align:middle">waving_hand</span>';
   document.getElementById('hero-class').textContent='Class: '+st.className;
 
   // Get assessments for this student's class
@@ -433,7 +433,7 @@ function loadDashboard(){
     const qs=DB.get('questions').filter(q=>q.assessmentId===a.id);
     const pct=sub?Math.round(sub.score/a.maxScore*100):null;
     return `<div class="ass-card${done?' completed':''}" onclick="startAssessment('${a.id}')">
-      <div class="ac-icon ${done?'done':a.config==='MCQ'?'mcq':'essay'}">${done?'✅':a.config==='MCQ'?'📝':'✍️'}</div>
+      <div class="ac-icon ${done?'done':a.config==='MCQ'?'mcq':'essay'}"><span class="material-icons">${done?'check_circle':a.config==='MCQ'?'quiz':'edit_note'}</span></div>
       <div class="ac-info">
         <div class="ac-title">${a.name}</div>
         <div class="ac-sub">${a.subjectName} · ${a.lessonName}</div>
@@ -676,7 +676,7 @@ function showResults(ass,qs,ans,score){
   }
   const max=ass.maxScore||qs.reduce((s,q)=>s+q.points,0);
   const pct=Math.round(score/max*100);
-  const emoji=pct>=90?'🏆':pct>=70?'🎉':pct>=50?'👍':pct>=30?'📚':'💪';
+  const emoji=pct>=90?'emoji_events':pct>=70?'celebration':pct>=50?'thumb_up':pct>=30?'menu_book':'fitness_center';
   const label=pct>=90?'Outstanding!':pct>=70?'Great job!':pct>=50?'Good effort!':pct>=30?'Keep studying!':'Don\'t give up!';
   document.getElementById('r-emoji').textContent=emoji;
   document.getElementById('r-score').textContent=score;
@@ -705,7 +705,7 @@ function showResults(ass,qs,ans,score){
   const subRecord = CACHE.submissions?.find(s=>s.assessmentId===ass.id&&s.studentId===currentStudent?.id);
   if(subRecord?.returnNote){
     noteEl.style.display='block';
-    noteEl.innerHTML='<strong>📩 Teacher note:</strong> '+subRecord.returnNote;
+    noteEl.innerHTML='<strong><span class="material-icons" style="font-size:15px;vertical-align:middle">mail</span> Teacher note:</strong> '+subRecord.returnNote;
   } else { noteEl.style.display='none'; }
   // Store for review
   window._lastReview={qs,ans};
@@ -750,8 +750,8 @@ function showReview(){
     return `<div class="rq-card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
         <span style="font-size:11px;color:var(--muted);font-weight:700">Q${i+1} · ${q.points} pts</span>
-        ${isMCQ?`<span style="font-size:12px;font-weight:700;color:${isCorrect?'var(--g-dark)':'#e53935'}">${isCorrect?'✓ Correct':'✗ Wrong'}</span>`:''}
-        ${isGap?`<span style="font-size:12px;font-weight:700;color:${gapAllCorrect?'var(--g-dark)':'#e65100'}">${gapAllCorrect?'✓ All correct':'Partial credit'}</span>`:''}
+        ${isMCQ?`<span style="font-size:12px;font-weight:700;color:${isCorrect?'var(--g-dark)':'#e53935'}"><span class="material-icons" style="font-size:14px;vertical-align:middle">${isCorrect?'check_circle':'cancel'}</span> ${isCorrect?'Correct':'Wrong'}</span>`:''}
+        ${isGap?`<span style="font-size:12px;font-weight:700;color:${gapAllCorrect?'var(--g-dark)':'#e65100'}"><span class="material-icons" style="font-size:14px;vertical-align:middle">${gapAllCorrect?'check_circle':'rule'}</span> ${gapAllCorrect?'All correct':'Partial credit'}</span>`:''}
       </div>
       <div class="rq-q tinymce-content">${q.type==='Gap Fill'?q.title.replace(/\[\[blank\]\]/g,'_____'):q.title}</div>
       ${q.image ? `<div style="margin:10px 0;text-align:center"><img src="${q.image}" style="max-width:100%;max-height:200px;border-radius:8px;opacity:.9" alt=""/></div>` : ''}
@@ -781,7 +781,7 @@ function updateTimerDisplay(){
   const m=Math.floor(timeLeft/60), s=timeLeft%60;
   const el=document.getElementById('quiz-timer');
   if(el){
-    el.textContent=(timeLeft<=60?'⚠ ':'')+`${m}:${s.toString().padStart(2,'0')}`;
+    el.innerHTML=(timeLeft<=60?'<span class="material-icons" style="font-size:14px;vertical-align:middle">warning_amber</span> ':'')+`${m}:${s.toString().padStart(2,'0')}`;
     el.style.background=timeLeft<=60?'rgba(229,57,53,.6)':'rgba(255,255,255,.2)';
   }
 }
@@ -878,8 +878,8 @@ const KM_SP = {
   'Back to Dashboard':'ត្រឡប់ទៅផ្ទាំង',
   'Review Answers':'មើលចម្លើយ',
   "Teacher's Note":'កំណត់សម្គាល់គ្រូ',
-  '✓ Correct':'✓ ត្រូវ',
-  '✗ Wrong':'✗ មិនត្រូវ',
+  'Correct':'ត្រូវ',
+  'Wrong':'មិនត្រូវ',
   'Short Answer':'ចម្លើយខ្លី',
   '(no answer)':'(គ្មានចម្លើយ)',
 };
