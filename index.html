@@ -82,6 +82,17 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);font-size:14px;mi
 .fuk::after{content:'';position:absolute;width:30%;height:100%;top:0;left:35%;background:#fff}
 .av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gm),var(--gd));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;cursor:pointer}
 .nd{width:7px;height:7px;background:#f44336;border-radius:50%;position:absolute;top:5px;right:5px;border:1.5px solid #fff}
+.user-menu{position:absolute;top:46px;right:0;width:270px;background:#fff;border-radius:14px;box-shadow:0 14px 44px rgba(0,0,0,.16);padding:20px;display:none;z-index:200;border:1px solid var(--bo)}
+.user-menu.open{display:block}
+.um-name{font-size:16px;font-weight:800;margin-bottom:12px}
+.um-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx);margin-bottom:7px}
+.um-row .material-icons{font-size:16px;color:var(--mu)}
+.um-divider{height:1px;background:var(--bo);margin:14px 0}
+.um-label{font-size:13px;font-weight:800;margin-bottom:10px}
+.um-roles{display:flex;flex-wrap:wrap;gap:8px}
+.um-role-chip{background:var(--gl);color:var(--gd);border-radius:20px;padding:6px 14px;font-size:11px;font-weight:700}
+.um-logout{display:flex;align-items:center;gap:8px;color:#e53935;font-weight:700;font-size:14px;cursor:pointer}
+.um-logout:hover{text-decoration:underline}
 .pc{flex:1;padding:28px 28px 40px}
 .page{display:none}.page.active{display:block}
 .ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
@@ -190,7 +201,7 @@ tbody td{padding:11px 13px;font-size:13px;vertical-align:middle}
 .ab .ib.del:hover{border-color:#f44336;color:#f44336;background:#fef2f2}
 .qrb{width:27px;height:27px;background:var(--dk);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;border:none}
 .qrb .material-icons{font-size:14px}
-.thumbi{width:42px;height:34px;border-radius:6px;background:var(--gl);display:flex;align-items:center;justify-content:center;color:var(--gm)}
+.thumbi{width:42px;height:34px;border-radius:6px;background:var(--gl);display:flex;align-items:center;justify-content:center;color:var(--gm);overflow:hidden}
 .thumbi .material-icons{font-size:17px}
 .nd-data{text-align:center;padding:52px 20px;color:var(--mu)}
 .nd-data .material-icons{font-size:48px;color:#d0d8e4;display:block;margin-bottom:8px}
@@ -411,12 +422,24 @@ body.theme-rose .modal{background:#fff7f9}
       <button class="tog" onclick="toggleSidebar()"><span class="material-icons">menu</span></button>
       <div class="tsp"></div>
       <button id="lang-toggle" onclick="toggleLang()" style="background:none;border:1.5px solid var(--bo);border-radius:8px;padding:3px 10px;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:700;color:var(--gd);display:flex;align-items:center;gap:5px" title="Switch Language">
-        <span id="lang-flag">🇰🇭</span><span id="lang-label">ខ្មែរ</span>
+        <span class="material-icons" id="lang-flag" style="font-size:16px">language</span><span id="lang-label">ខ្មែរ</span>
       </button>
       <div class="ti" style="position:relative"><span class="material-icons-outlined">notifications</span><div class="nd"></div></div>
       <div class="ti" onclick="nav('settings',this)" title="Settings" style="cursor:pointer"><span class="material-icons-outlined">settings</span></div>
       <span id="user-role-badge" style="font-size:11px;font-weight:700;background:var(--gl);color:var(--gd);padding:3px 10px;border-radius:20px"></span>
-      <div class="av" id="user-avatar" title="Click to logout" onclick="doLogout()">?</div>
+      <div style="position:relative">
+        <div class="av" id="user-avatar" title="Account" onclick="toggleUserMenu(event)">?</div>
+        <div class="user-menu" id="user-menu">
+          <div class="um-name" id="um-name">—</div>
+          <div class="um-row"><span class="material-icons">mail</span><span id="um-email">—</span></div>
+          <div class="um-row" id="um-id-row" style="display:none"><span class="material-icons">person</span><span id="um-id"></span></div>
+          <div class="um-divider"></div>
+          <div class="um-label">Roles</div>
+          <div class="um-roles" id="um-roles"></div>
+          <div class="um-divider"></div>
+          <div class="um-logout" onclick="doLogout()"><span class="material-icons">logout</span>Logout</div>
+        </div>
+      </div>
     </header>
     <main class="pc">
 
@@ -1126,6 +1149,27 @@ function qTypeLabel(t){
   const map={'MCQ':'SINGLE_CHOICE','True/False':'TRUE_FALSE','Dropdown':'DROPDOWN','Gap Fill':'FILL_BLANK','Short Answer':'SHORT_ANSWER'};
   return map[t]||(t||'SINGLE_CHOICE').toUpperCase().replace(/\s+/g,'_');
 }
+function toggleUserMenu(e){
+  if(e) e.stopPropagation();
+  const m=document.getElementById('user-menu');
+  if(!m) return;
+  const willOpen = !m.classList.contains('open');
+  if(willOpen) populateUserMenu();
+  m.classList.toggle('open', willOpen);
+}
+function populateUserMenu(){
+  document.getElementById('um-name').textContent = CURRENT_USER?.displayName || 'User';
+  document.getElementById('um-email').textContent = CURRENT_USER?.email || '—';
+  document.getElementById('um-roles').innerHTML = isAdmin()
+    ? '<span class="um-role-chip">ROLE_ADMIN</span>'
+    : '<span class="um-role-chip">ROLE_TEACHER</span>';
+}
+document.addEventListener('click', function(e){
+  const menu = document.getElementById('user-menu');
+  if(menu && menu.classList.contains('open') && !menu.contains(e.target) && e.target.id!=='user-avatar'){
+    menu.classList.remove('open');
+  }
+});
 function toggleFP(panelId, btn){
   const panel=document.getElementById(panelId);
   if(!panel) return;
@@ -1265,7 +1309,13 @@ function rowHTML(type,r,n){
   const classCopyBtn = type==='class' ? `<div class="ib" title="Duplicate Class" onclick="duplicateClass('${r.id}')"><span class="material-icons">content_copy</span></div>` : '';
   const classViewBtn = type==='class' ? `<div class="ib" title="View" onclick="openClassDetail('${r.id}')"><span class="material-icons">visibility</span></div>` : '';
   const ac=`<div class="ab">${viewBtn}${classViewBtn}${qManageBtn}${copyBtn}${linkBtn}${classCopyBtn}${editBtn}${delBtn}</div>`;
-  if(type==='class')      return`<tr><td>${n}</td><td>${r.year||'—'}</td><td>${r.campus||'—'}</td><td><div class="thumbi"><span class="material-icons">image</span></div></td><td><span class="code">${r.code||'—'}</span></td><td><button class="qrb" onclick="showQR('${esc(r.code||r.id)}','${esc(r.name)}')"><span class="material-icons">qr_code_2</span></button></td><td><strong>${r.name}</strong></td><td><span class="chip ${r.smsInfo==='Active'?'cg':'co'}">${r.smsInfo||'Active'}</span></td><td><strong>${r.totalStudents||0}</strong></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
+  if(type==='class'){
+    const thumbHtml = r.thumbnail
+      ? `<img src="${r.thumbnail}" style="width:100%;height:100%;object-fit:cover;border-radius:8px"/>`
+      : `<span class="material-icons">image</span>`;
+    const smsChips = `<span class="cfg-chip">Year: ${esc(r.year||'—')}</span><span class="cfg-chip">Campus: ${esc(r.campus||'—')}</span><span class="cfg-chip">Class: ${esc(r.name||'—')}</span>`;
+    return`<tr><td>${n}</td><td>${r.year||'—'}</td><td>${r.campus||'—'}</td><td><div class="thumbi">${thumbHtml}</div></td><td><span class="code">${r.code||'—'}</span></td><td><button class="qrb" onclick="showQR('${esc(r.code||r.id)}','${esc(r.name)}')"><span class="material-icons">qr_code_2</span></button></td><td><strong>${r.name}</strong></td><td>${smsChips}</td><td><strong>${r.totalStudents||0}</strong></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
+  }
   if(type==='subject')    return`<tr><td>${n}</td><td>${r.className||'—'}</td><td><strong>${r.name}</strong></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
   if(type==='lesson')     return`<tr><td>${n}</td><td>${r.className||'—'}</td><td>${r.subjectName||'—'}</td><td><strong>${r.name}</strong></td><td><span class="chip cb2">${r.ordinal||1}</span></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
   if(type==='assessment'){
@@ -1374,8 +1424,7 @@ const FORMS={
     {k:'year',  l:'Academic Year', t:'text',  req:true, ph:'e.g. 2025–2026'},
     {k:'campus',l:'Campus',        t:'text',  req:true, ph:'e.g. Main Campus'},
     {k:'code',  l:'Class Code',    t:'text',  ph:'e.g. CLS-001'},
-    {k:'totalStudents',l:'Total Students',t:'number',ph:'0'},
-    {k:'smsInfo',l:'SMS Status',   t:'select',opts:['Active','Pending','Inactive']},
+    {k:'thumbnail',l:'Thumbnail',  t:'imgupload',ph:'Optional: a cover image for this class'},
   ]},
   subject:{title:'Subject',fields:[
     {k:'classId',l:'Class',        t:'ref',ref:'classs',  lk:'name',req:true},
@@ -1618,6 +1667,13 @@ function toggleFPw(id,btn){ const el=document.getElementById(id); if(!el)return;
 
 // ── TINYMCE INIT
 function initTinyMCE(id){
+  // Destroy any existing editor bound to this id first — otherwise re-rendering
+  // the textarea underneath (e.g. switching questions in the wizard) leaves the
+  // OLD editor instance active, so typing/saving silently affects the wrong question.
+  if(typeof tinymce!=='undefined'){
+    const existing = tinymce.get(id);
+    if(existing) existing.remove();
+  }
   setTimeout(()=>{
     tinymce.init({
       selector: '#'+id,
@@ -1929,8 +1985,15 @@ async function saveModal(again){
   // Map type to Firestore collection name
   const colKey = type==='student'?'students':type==='class'?'classs':type+'s';
   const displayName = CURRENT_USER?.displayName || 'Admin';
-  let rec={id:editId||DB.uid(), createdBy:displayName, createdByEmail:CURRENT_USER?.email||'', createdAt:now};
-  if(editId){ const old=DB.get(colKey).find(r=>r.id===editId); if(old) rec.createdAt=old.createdAt; }
+  // Start from the existing record when editing, so fields not present on the form
+  // (like a class's computed totalStudents, or an assessment's live/publish flag)
+  // survive the save instead of being silently wiped out.
+  const existing = editId ? DB.get(colKey).find(r=>r.id===editId) : null;
+  let rec = existing ? {...existing} : {};
+  rec.id = editId || DB.uid();
+  rec.createdBy = rec.createdBy || displayName;
+  rec.createdByEmail = rec.createdByEmail || (CURRENT_USER?.email || '');
+  rec.createdAt = rec.createdAt || now;
 
   for(const f of form.fields){
     const el=document.getElementById('mf-'+f.k); if(!el) continue;
@@ -2026,7 +2089,7 @@ async function syncStudentCounts(){
     const count=students.filter(s=>s.classId===c.id).length;
     if(c.totalStudents!==count){
       c.totalStudents=count;
-      return dbSet('classes',c.id,c);
+      return dbSet('classs',c.id,c);
     }
   }));
 }
@@ -2742,30 +2805,6 @@ function openViewModal(type, id){
   const body    = document.getElementById('vm-body');
   const LETTERS = 'ABCDEFGH';
 
-  if(type === 'class'){
-    const c = DB.get('classs').find(r=>r.id===id);
-    if(!c){ toast('Not found','err'); return; }
-    document.getElementById('vm-title').textContent = 'Class Detail';
-    const subCount = DB.get('subjects').filter(s=>s.classId===id).length;
-    body.innerHTML = `
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin:16px 0">
-        <span class="chip cg">${c.year||'—'}</span>
-        <span class="chip cb2">${c.campus||'—'}</span>
-      </div>
-      <div style="font-size:18px;font-weight:800;margin-bottom:14px">${c.name||'(unnamed class)'}</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
-        <div><strong>Code:</strong> ${c.code||'—'}</div>
-        <div><strong>Total Students:</strong> ${c.totalStudents||0}</div>
-        <div><strong>Subjects:</strong> ${subCount}</div>
-        <div><strong>SMS Status:</strong> ${c.smsInfo||'Active'}</div>
-        <div><strong>Created By:</strong> ${c.createdBy||'Admin'}</div>
-        <div><strong>Created At:</strong> ${c.createdAt||'—'}</div>
-      </div>`;
-    document.getElementById('view-overlay').style.display='flex';
-    setTimeout(()=>document.getElementById('view-overlay').classList.add('open'),10);
-    return;
-  }
-
   if(type === 'question'){
     const q = DB.get('questions').find(r=>r.id===id);
     if(!q){ toast('Not found','err'); return; }
@@ -3423,7 +3462,7 @@ function translateDOM(root){
 
 function applyLang(){
   translateDOM(document.body);
-  document.getElementById('lang-flag').textContent = LANG==='km' ? '🇺🇸' : '🇰🇭';
+  // lang-flag now uses a static Material Icon (language) — no flag glyph to swap
   document.getElementById('lang-label').textContent = LANG==='km' ? 'English' : 'ខ្មែរ';
   // Persist choice and re-render tables so dynamic content also gets translated
   localStorage.setItem('lms_lang', LANG);
