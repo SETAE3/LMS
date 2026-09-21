@@ -505,16 +505,25 @@ body.theme-rose .modal{background:#fff7f9}
         <div class="ph"><div><div class="pt">Subject List</div><div class="bc"><span>Dashboard</span><span class="material-icons bc-dot">fiber_manual_record</span><span class="ac">Subject List</span></div></div>
           <button class="btn-c" onclick="openCreate('subject')"><span class="material-icons">add</span>Create New Subject</button></div>
         <div class="tc">
-          <div class="tt">
+          <div class="tt2">
             <div class="sw2"><span class="material-icons">search</span><input type="text" placeholder="Type to Search..." oninput="doSearch('subject',this.value)"/></div>
             <div class="tr2">
-              <div class="ib xl" onclick="exportCSV('subject')"><span class="material-icons">table_view</span></div>
+              <div class="ib" title="Toggle filters" onclick="toggleFP('fpanel-subject',this)"><span class="material-icons">tune</span></div>
+              <div class="ib" title="Collapse" onclick="toggleFP('fpanel-subject',this)"><span class="material-icons">expand_less</span></div>
+              <div class="ib xl" title="Export CSV" onclick="exportCSV('subject')"><span class="material-icons">table_view</span></div>
               <div class="ib" onclick="changePage('subject',-1)"><span class="material-icons">arrow_back</span></div>
               <div class="ib" onclick="changePage('subject',1)"><span class="material-icons">arrow_forward</span></div>
-              <div class="ib ref" onclick="doRefresh('subject',this)"><span class="material-icons">refresh</span></div>
             </div>
           </div>
-          <div class="tw"><table><thead><tr><th>#</th><th>Class</th><th>Subject</th><th>Created By</th><th>Created At ↓</th><th>Action</th></tr></thead><tbody id="tb-subject"></tbody></table></div>
+          <div class="fpanel" id="fpanel-subject">
+            <div class="fpanel-title">Filter</div>
+            <div class="fpanel-row">
+              <div class="fbox"><label>Year</label><div class="csd" id="f-subject-year"></div></div>
+              <div class="freset" title="Reset filters" onclick="doRefresh('subject',this)"><span class="material-icons">refresh</span></div>
+            </div>
+          </div>
+          <div class="tw"><table><thead><tr><th>#</th><th>Year</th><th>Class</th><th>Subject</th><th>Created By</th><th>Created At ↓</th><th>Action</th></tr></thead><tbody id="tb-subject"></tbody></table></div>
+          <div class="pw2"><div class="pf" id="pf-subject" style="width:0"></div></div>
           <div class="pg" id="pg-subject"></div>
         </div>
       </div>
@@ -1215,6 +1224,9 @@ function refreshFilters(){
   fillVals('f-class-campus', [...new Set(cls.map(c=>c.campus).filter(Boolean))], 'All Campuses');
   csdOn('f-class-year',   ()=>renderT('class'));
   csdOn('f-class-campus', ()=>renderT('class'));
+  // Subject page filters
+  fillVals('f-subject-year', [...new Set(cls.map(c=>c.year).filter(Boolean))], 'All Years');
+  csdOn('f-subject-year', ()=>renderT('subject'));
   // Lesson filters
   fillRef('f-lesson-class',   cls,  'All Classes');
   fillRef('f-lesson-subject', subs, 'All Subjects');
@@ -1269,6 +1281,13 @@ function getFiltered(type){
     const yr=csdVal('f-class-year'), cp=csdVal('f-class-campus');
     if(yr) data=data.filter(r=>r.year===yr);
     if(cp) data=data.filter(r=>r.campus===cp);
+  }
+  if(type==='subject'){
+    const yr=csdVal('f-subject-year');
+    if(yr){
+      const clsMap={}; DB.get('classs').forEach(c=>clsMap[c.id]=c);
+      data=data.filter(r=>clsMap[r.classId]?.year===yr);
+    }
   }
   if(type==='lesson'){
     const cl=csdVal('f-lesson-class'), su=csdVal('f-lesson-subject');
@@ -1343,7 +1362,10 @@ function rowHTML(type,r,n){
     const smsChips = `<span class="cfg-chip">Year: ${esc(r.year||'—')}</span><span class="cfg-chip">Campus: ${esc(r.campus||'—')}</span><span class="cfg-chip">Class: ${esc(r.name||'—')}</span>`;
     return`<tr><td>${n}</td><td>${r.year||'—'}</td><td>${r.campus||'—'}</td><td><div class="thumbi">${thumbHtml}</div></td><td><span class="code">${r.code||'—'}</span></td><td><button class="qrb" onclick="showQR('${esc(r.code||r.id)}','${esc(r.name)}')"><span class="material-icons">qr_code_2</span></button></td><td><strong>${r.name}</strong></td><td>${smsChips}</td><td><strong>${r.totalStudents||0}</strong></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
   }
-  if(type==='subject')    return`<tr><td>${n}</td><td>${r.className||'—'}</td><td><strong>${r.name}</strong></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
+  if(type==='subject'){
+    const yr = DB.get('classs').find(c=>c.id===r.classId)?.year || '—';
+    return`<tr><td>${n}</td><td>${yr}</td><td>${r.className||'—'}</td><td><strong>${r.name}</strong></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
+  }
   if(type==='lesson')     return`<tr><td>${n}</td><td>${r.className||'—'}</td><td>${r.subjectName||'—'}</td><td><strong>${r.name}</strong></td><td><span class="chip cb2">${r.ordinal||1}</span></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
   if(type==='assessment'){
     const totalQ = DB.get('questions').filter(q=>q.assessmentId===r.id).length;
