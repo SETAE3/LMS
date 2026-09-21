@@ -201,7 +201,12 @@ tbody td{padding:11px 13px;font-size:13px;vertical-align:middle}
 .ab .ib.del:hover{border-color:#f44336;color:#f44336;background:#fef2f2}
 .qrb{width:27px;height:27px;background:var(--dk);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;border:none}
 .qrb .material-icons{font-size:14px}
-.thumbi{width:42px;height:34px;border-radius:6px;background:var(--gl);display:flex;align-items:center;justify-content:center;color:var(--gm);overflow:hidden}
+.thumbi{width:44px;height:44px;border-radius:8px;background:#fff;border:1px solid var(--bo);display:flex;align-items:center;justify-content:center;color:var(--gm);overflow:hidden;cursor:zoom-in}
+.thumbi img{width:100%;height:100%;object-fit:contain}
+.thumb-preview{position:fixed;z-index:500;display:none;background:#1e1b2e;border-radius:16px;padding:14px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.thumb-preview img{width:220px;height:220px;object-fit:contain;border-radius:12px;display:block;background:#fff}
+.thumb-preview.arrow-left::after{content:'';position:absolute;top:50%;left:-16px;transform:translateY(-50%);border:8px solid transparent;border-right-color:#1e1b2e}
+.thumb-preview.arrow-right::after{content:'';position:absolute;top:50%;right:-16px;transform:translateY(-50%);border:8px solid transparent;border-left-color:#1e1b2e}
 .thumbi .material-icons{font-size:17px}
 .nd-data{text-align:center;padding:52px 20px;color:var(--mu)}
 .nd-data .material-icons{font-size:48px;color:#d0d8e4;display:block;margin-bottom:8px}
@@ -687,20 +692,42 @@ body.theme-rose .modal{background:#fff7f9}
       <div class="page" id="page-grades">
         <div class="ph">
           <div>
-            <div class="pt">Grades &amp; Submissions</div>
-            <div class="bc"><span>Dashboard</span><span class="material-icons bc-dot">fiber_manual_record</span><span class="ac">Grades</span></div>
+            <div class="pt">Assessment Results</div>
+            <div class="bc"><span>Dashboard</span><span class="material-icons bc-dot">fiber_manual_record</span><span class="ac">Assessment Results</span></div>
           </div>
+          <button class="btn-c" id="sync-score-btn" onclick="syncScores()"><span class="material-icons">sync</span>Sync Score</button>
         </div>
         <div class="tc">
-          <div class="tt" style="flex-wrap:wrap;gap:10px">
-            <div class="fgp"><label>Assessment</label><div class="csd" id="gf-assessment"></div></div>
-            <div class="fgp"><label>Class</label><div class="csd" id="gf-class"></div></div>
-            <div class="fgp"><label>Status</label><div class="csd" id="gf-status"></div></div>
+          <div class="tt2">
+            <div class="sw2"><span class="material-icons">search</span><input type="text" id="gf-search" placeholder="Type to Search..." oninput="renderGradesTable()"/></div>
+            <div class="tr2">
+              <div class="ib" title="Toggle filters" onclick="toggleFP('fpanel-grades',this)"><span class="material-icons">tune</span></div>
+              <div class="ib" title="Collapse" onclick="toggleFP('fpanel-grades',this)"><span class="material-icons">expand_less</span></div>
+              <div class="ib xl" title="Export CSV" onclick="exportGradesCSV()"><span class="material-icons">table_view</span></div>
+              <div class="ib" onclick="changePage('grades',-1)"><span class="material-icons">arrow_back</span></div>
+              <div class="ib" onclick="changePage('grades',1)"><span class="material-icons">arrow_forward</span></div>
+            </div>
+          </div>
+          <div class="fpanel" id="fpanel-grades">
+            <div class="fpanel-title">Filter</div>
+            <div class="fpanel-row">
+              <div class="fbox"><label>Year</label><div class="csd" id="gf-year"></div></div>
+              <div class="fbox"><label>Campus</label><div class="csd" id="gf-campus"></div></div>
+              <div class="fbox"><label>Class</label><div class="csd" id="gf-class"></div></div>
+              <div class="fbox"><label>Subject</label><div class="csd" id="gf-subject"></div></div>
+              <div class="freset" title="Reset filters" onclick="resetGradesFilters()"><span class="material-icons">refresh</span></div>
+            </div>
+            <div class="fpanel-row" style="margin-top:14px">
+              <div class="fbox"><label>Lesson</label><div class="csd" id="gf-lesson"></div></div>
+              <div class="fbox"><label>Assessment</label><div class="csd" id="gf-assessment"></div></div>
+              <div class="fbox"><label>Status</label><div class="csd" id="gf-status"></div></div>
+              <div class="fbox" style="max-width:200px"><label>Created At</label><input type="date" id="gf-createdat" onchange="renderGradesTable()" style="width:100%;border:1.5px solid var(--bo);border-radius:10px;padding:11px 12px;font-family:var(--f);font-size:13px"/></div>
+            </div>
           </div>
           <div class="tw"><table><thead><tr>
-            <th>#</th><th>Student</th><th>Class</th><th>Assessment</th>
-            <th>Score</th><th>%</th><th>Status</th><th>Submitted</th><th>Action</th>
+            <th>#</th><th>Year</th><th>Campus</th><th>Class</th><th>Subject</th><th>Lesson</th><th>Assessment</th><th>Photo</th><th>Student Name</th><th>Status</th><th>Synced at</th><th>Score</th><th>Duration</th><th>Created At ↓</th><th>Action</th>
           </tr></thead><tbody id="tb-grades"></tbody></table></div>
+          <div class="pw2"><div class="pf" id="pf-grades" style="width:0"></div></div>
           <div class="pg" id="pg-grades"></div>
         </div>
       </div>
@@ -1311,7 +1338,7 @@ function rowHTML(type,r,n){
   const ac=`<div class="ab">${viewBtn}${classViewBtn}${qManageBtn}${copyBtn}${linkBtn}${classCopyBtn}${editBtn}${delBtn}</div>`;
   if(type==='class'){
     const thumbHtml = r.thumbnail
-      ? `<img src="${r.thumbnail}" style="width:100%;height:100%;object-fit:cover;border-radius:8px"/>`
+      ? `<img src="${r.thumbnail}" alt=""/>`
       : `<span class="material-icons">image</span>`;
     const smsChips = `<span class="cfg-chip">Year: ${esc(r.year||'—')}</span><span class="cfg-chip">Campus: ${esc(r.campus||'—')}</span><span class="cfg-chip">Class: ${esc(r.name||'—')}</span>`;
     return`<tr><td>${n}</td><td>${r.year||'—'}</td><td>${r.campus||'—'}</td><td><div class="thumbi">${thumbHtml}</div></td><td><span class="code">${r.code||'—'}</span></td><td><button class="qrb" onclick="showQR('${esc(r.code||r.id)}','${esc(r.name)}')"><span class="material-icons">qr_code_2</span></button></td><td><strong>${r.name}</strong></td><td>${smsChips}</td><td><strong>${r.totalStudents||0}</strong></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
@@ -1377,7 +1404,7 @@ function renderPag(type,total,tp){
   csdOn(psId, v=>setPS(type,v));
 }
 function renderAny(t){ if(t==='grades') renderGradesTable(); else renderT(t); }
-function changePage(t,d){ const s=ST[t]; const tp=t==='grades'?Math.ceil((DB.get('submissions')||[]).length/s.ps):Math.max(1,Math.ceil(getFiltered(t).length/s.ps)); s.page=Math.max(1,Math.min(Math.max(1,tp),s.page+d)); renderAny(t); }
+function changePage(t,d){ const s=ST[t]; const tp=t==='grades'?Math.max(1,Math.ceil((gfLastRows||[]).length/s.ps)):Math.max(1,Math.ceil(getFiltered(t).length/s.ps)); s.page=Math.max(1,Math.min(Math.max(1,tp),s.page+d)); renderAny(t); }
 function goPage(t,p){ ST[t].page=p; renderAny(t); }
 function setPS(t,v){ ST[t].ps=+v; ST[t].page=1; renderAny(t); }
 function doSearch(t,v){ ST[t].q=v; ST[t].page=1; renderT(t); }
@@ -1394,6 +1421,37 @@ function exportCSV(type){
 }
 
 // ── QR
+// Hover preview for small table thumbnails (class logos etc.)
+let thumbPreviewEl=null;
+function ensureThumbPreview(){
+  if(!thumbPreviewEl){
+    thumbPreviewEl=document.createElement('div');
+    thumbPreviewEl.className='thumb-preview';
+    thumbPreviewEl.innerHTML='<img alt=""/>';
+    document.body.appendChild(thumbPreviewEl);
+  }
+  return thumbPreviewEl;
+}
+function showThumbPreview(imgEl){
+  const src=imgEl.getAttribute('src');
+  if(!src) return;
+  const preview=ensureThumbPreview();
+  preview.querySelector('img').src=src;
+  preview.style.display='block';
+  const rect=imgEl.getBoundingClientRect();
+  const pw=preview.offsetWidth, ph=preview.offsetHeight;
+  let left=rect.right+16, arrowLeft=true;
+  if(left+pw>window.innerWidth-10){ left=rect.left-pw-16; arrowLeft=false; }
+  let top=rect.top+rect.height/2-ph/2;
+  top=Math.max(10,Math.min(top,window.innerHeight-ph-10));
+  preview.style.left=left+'px';
+  preview.style.top=top+'px';
+  preview.classList.toggle('arrow-left',arrowLeft);
+  preview.classList.toggle('arrow-right',!arrowLeft);
+}
+function hideThumbPreview(){ if(thumbPreviewEl) thumbPreviewEl.style.display='none'; }
+document.addEventListener('mouseover', e=>{ const img=e.target.closest('.thumbi img'); if(img) showThumbPreview(img); });
+document.addEventListener('mouseout',  e=>{ const img=e.target.closest('.thumbi img'); if(img) hideThumbPreview(); });
 function showQR(code,name){
   document.getElementById('mtitle').textContent='QR Code – '+name;
   document.getElementById('mbody').innerHTML=`<div style="text-align:center;padding:8px 0"><canvas id="qrc" width="200" height="200" class="qr-canvas"></canvas><p style="margin-top:12px;font-weight:700">${code}</p><p style="color:var(--mu);font-size:12px;margin-top:3px">Scan to access class resources</p><button class="btn-sv" style="margin-top:14px;width:100%;background:var(--dk)" onclick="dlQR()"><span class="material-icons" style="font-size:15px;vertical-align:middle">download</span> Download</button></div>`;
@@ -1469,7 +1527,6 @@ const FORMS={
     {k:'password',l:'Password',    t:'pwfield',req:true,ph:'Minimum 6 characters'},
     {k:'classId', l:'Assign to Class',t:'ref',ref:'classs',lk:'name',req:true},
     {k:'shift',   l:'Shift',       t:'select',opts:['MORNING','AFTERNOON']},
-    {k:'permanentId',l:'Permanent ID',t:'text',ph:'e.g. PI025-0003756'},
     {k:'gender',  l:'Gender',      t:'select',opts:['Male','Female']},
     {k:'dob',     l:'Date of Birth',t:'date'},
     {k:'photo',   l:'Photo',       t:'imgupload',ph:'Optional: a photo of the student'},
@@ -1977,6 +2034,15 @@ async function qwizSave(){
   finally{ btn.disabled=false; btn.innerHTML='<span class="material-icons" style="font-size:16px;vertical-align:middle">save</span> Save Changes'; }
 }
 
+function generatePermanentId(){
+  const yy = String(new Date().getFullYear()).slice(-2);
+  const prefix = 'PI0'+yy+'-';
+  const existing = new Set(DB.get('students').map(s=>s.permanentId).filter(Boolean));
+  let id;
+  do { id = prefix + String(Math.floor(Math.random()*10000000)).padStart(7,'0'); }
+  while(existing.has(id));
+  return id;
+}
 let lastQCtx={};
 async function saveModal(again){
   const type=curType, form=FORMS[type];
@@ -1994,6 +2060,7 @@ async function saveModal(again){
   rec.createdBy = rec.createdBy || displayName;
   rec.createdByEmail = rec.createdByEmail || (CURRENT_USER?.email || '');
   rec.createdAt = rec.createdAt || now;
+  if(type==='student' && !editId && !rec.permanentId){ rec.permanentId = generatePermanentId(); }
 
   for(const f of form.fields){
     const el=document.getElementById('mf-'+f.k); if(!el) continue;
@@ -2495,57 +2562,129 @@ function toast(msg,type='ok'){
 let currentSubmission = null;
 
 async function renderGrades(){
-  // Load fresh data
-  const ldg = document.getElementById('ldg');
-  // Fill filter dropdowns
-  const assessments = DB.get('assessments');
-  const classes = DB.get('classs');
-  const submissions = DB.get('submissions') || [];
-
-  // Assessment filter
-  csdFill('gf-assessment',
-    [{value:'',label:'All Assessments'},...assessments.map(a=>({value:a.id,label:a.name}))],
-    'All Assessments');
-  // Class filter
-  csdFill('gf-class',
-    [{value:'',label:'All Classes'},...classes.map(c=>({value:c.id,label:c.name}))],
-    'All Classes');
-  // Status filter
+  const cls = DB.get('classs'), subs2 = DB.get('subjects'), les = DB.get('lessons'), ass = DB.get('assessments');
+  fillVals('gf-year',   [...new Set(cls.map(c=>c.year).filter(Boolean))], 'All Years');
+  fillVals('gf-campus', [...new Set(cls.map(c=>c.campus).filter(Boolean))], 'All Campuses');
+  fillRef('gf-class',      cls,   'All Classes');
+  fillRef('gf-subject',    subs2, 'All Subjects');
+  fillRef('gf-lesson',     les,   'All Lessons');
+  fillRef('gf-assessment', ass,   'All Assessments');
   csdFillEnum('gf-status',
     [{value:'',label:'All Statuses'},{value:'submitted',label:'Submitted'},{value:'returned',label:'Returned'}],
     '');
 
-  // Register filter callbacks
+  csdOn('gf-year',       ()=>renderGradesTable());
+  csdOn('gf-campus',     ()=>renderGradesTable());
+  csdOn('gf-class',      ()=>{ onGfClassChange(); renderGradesTable(); });
+  csdOn('gf-subject',    ()=>{ onGfSubjectChange(); renderGradesTable(); });
+  csdOn('gf-lesson',     ()=>renderGradesTable());
   csdOn('gf-assessment', ()=>renderGradesTable());
-  csdOn('gf-class',      ()=>renderGradesTable());
   csdOn('gf-status',     ()=>renderGradesTable());
 
   renderGradesTable();
 }
-
+function onGfClassChange(){
+  const cl = csdVal('gf-class');
+  const su = cl ? DB.get('subjects').filter(s=>s.classId===cl) : DB.get('subjects');
+  fillRef('gf-subject', su, 'All Subjects');
+  onGfSubjectChange();
+}
+function onGfSubjectChange(){
+  const cl = csdVal('gf-class'), su = csdVal('gf-subject');
+  const le = su ? DB.get('lessons').filter(l=>l.subjectId===su) : (cl ? DB.get('lessons').filter(l=>l.classId===cl) : DB.get('lessons'));
+  fillRef('gf-lesson', le, 'All Lessons');
+}
+function resetGradesFilters(){
+  ['gf-year','gf-campus','gf-class','gf-subject','gf-lesson','gf-assessment','gf-status'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.setAttribute('data-val','');
+  });
+  const dt=document.getElementById('gf-createdat'); if(dt) dt.value='';
+  const sr=document.getElementById('gf-search'); if(sr) sr.value='';
+  renderGrades();
+}
+function fmtDuration(sec){
+  if(sec===undefined || sec===null) return '—';
+  const m=Math.floor(sec/60), s=sec%60;
+  return `${m}m : ${String(s).padStart(2,'0')}s`;
+}
+function initials(name){
+  return (name||'?').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase() || '?';
+}
+async function syncScores(){
+  const btn=document.getElementById('sync-score-btn');
+  const orig=btn.innerHTML;
+  btn.disabled=true; btn.innerHTML='<span class="material-icons">sync</span>Syncing...';
+  try{
+    const subs=DB.get('submissions')||[];
+    const now=new Date().toISOString();
+    for(const sub of subs){ await dbSet('submissions', sub.id, {...sub, syncedAt:now}); }
+    await loadAll();
+    renderGradesTable();
+    toast('Scores synced!');
+  } catch(e){ toast('Sync failed: '+e.message,'err'); }
+  finally{ btn.disabled=false; btn.innerHTML=orig; }
+}
+function exportGradesCSV(){
+  const rows = gfLastRows || [];
+  if(!rows.length){ toast('Nothing to export','err'); return; }
+  const headers=['Year','Campus','Class','Subject','Lesson','Assessment','Student Name','Permanent ID','Status','Synced At','Score','Max Score','Duration','Created At'];
+  const lines=[headers.join(',')];
+  rows.forEach(r=>{
+    const cells=[r.year,r.campus,r.className,r.subjectName,r.lessonName,r.assessmentName,r.studentName,r.permanentId,r.status||'submitted',r.syncedAt||'',r.score,r.maxScore,fmtDuration(r.durationSeconds),r.submittedAt||''];
+    lines.push(cells.map(c=>`"${String(c==null?'':c).replace(/"/g,'""')}"`).join(','));
+  });
+  const blob=new Blob([lines.join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='assessment-results.csv';
+  a.click();
+}
+let gfLastRows=[];
 function renderGradesTable(){
   const subs = DB.get('submissions') || [];
   const students = DB.get('students');
   const assessments = DB.get('assessments');
+  const classes = DB.get('classs');
 
-  const filterAss    = csdVal('gf-assessment');
-  const filterClass  = csdVal('gf-class');
-  const filterStatus = csdVal('gf-status');
+  const fYear=csdVal('gf-year'), fCampus=csdVal('gf-campus'), fClass=csdVal('gf-class'),
+        fSubject=csdVal('gf-subject'), fLesson=csdVal('gf-lesson'), fAssessment=csdVal('gf-assessment'),
+        fStatus=csdVal('gf-status'), fCreatedAt=document.getElementById('gf-createdat')?.value||'',
+        fSearch=(document.getElementById('gf-search')?.value||'').toLowerCase();
 
   let rows = subs.map(sub => {
     const st  = students.find(s=>s.id===sub.studentId);
     const ass = assessments.find(a=>a.id===sub.assessmentId);
-    return {...sub, studentName:st?.name||'Unknown', className:st?.className||'—',
-            classId:st?.classId||'', assessmentName:ass?.name||'Unknown',
-            maxScore:sub.maxScore||ass?.maxScore||0};
+    const cl  = classes.find(c=>c.id===(st?.classId||ass?.classId));
+    return {
+      ...sub,
+      studentName: st?.name || 'Unknown',
+      studentPhoto: st?.photo || '',
+      permanentId: st?.permanentId || '',
+      classId: st?.classId || ass?.classId || '',
+      className: cl?.name || '—',
+      year: cl?.year || '—',
+      campus: cl?.campus || '—',
+      subjectId: ass?.subjectId || '',
+      subjectName: ass?.subjectName || '—',
+      lessonId: ass?.lessonId || '',
+      lessonName: ass?.lessonName || '—',
+      assessmentName: ass?.name || 'Unknown',
+      maxScore: sub.maxScore || ass?.maxScore || 0,
+    };
   });
 
-  if(filterAss)    rows = rows.filter(r=>r.assessmentId===filterAss);
-  if(filterClass)  rows = rows.filter(r=>r.classId===filterClass);
-  if(filterStatus) rows = rows.filter(r=>(r.status||'submitted')===filterStatus);
+  if(fYear)       rows = rows.filter(r=>r.year===fYear);
+  if(fCampus)     rows = rows.filter(r=>r.campus===fCampus);
+  if(fClass)      rows = rows.filter(r=>r.classId===fClass);
+  if(fSubject)    rows = rows.filter(r=>r.subjectId===fSubject);
+  if(fLesson)     rows = rows.filter(r=>r.lessonId===fLesson);
+  if(fAssessment) rows = rows.filter(r=>r.assessmentId===fAssessment);
+  if(fStatus)     rows = rows.filter(r=>(r.status||'submitted')===fStatus);
+  if(fCreatedAt)  rows = rows.filter(r=>(r.submittedAt||'').slice(0,10)===fCreatedAt);
+  if(fSearch)     rows = rows.filter(r=>(r.studentName+' '+r.assessmentName+' '+r.className+' '+r.permanentId).toLowerCase().includes(fSearch));
 
-  // Sort newest first
   rows.sort((a,b)=>new Date(b.submittedAt)-new Date(a.submittedAt));
+  gfLastRows = rows;
 
   const s = ST['grades'];
   const total = rows.length;
@@ -2556,33 +2695,42 @@ function renderGradesTable(){
   const paged = rows.slice(start, end);
 
   const tb = document.getElementById('tb-grades');
+  const pf = document.getElementById('pf-grades');
   if(!rows.length){
-    tb.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--mu)">No submissions found.</td></tr>`;
+    tb.innerHTML=`<tr><td colspan="15"><div class="nd-data"><span class="material-icons">inbox</span><p>No submissions found</p></div></td></tr>`;
     document.getElementById('pg-grades').innerHTML='';
+    if(pf) pf.style.width='0%';
     return;
   }
+  if(pf) pf.style.width = Math.min(100,Math.round(end/total*100))+'%';
 
   tb.innerHTML = paged.map((r,i)=>{
-    const pct = r.maxScore ? Math.round((r.score/r.maxScore)*100) : 0;
-    const pctColor = pct>=70?'var(--gd)':pct>=50?'#e65100':'#e53935';
+    const pctColor = r.maxScore ? (r.score/r.maxScore>=.7?'var(--gd)':r.score/r.maxScore>=.5?'#e65100':'#e53935') : 'var(--tx)';
     const isReturned = r.status==='returned';
     const date = r.submittedAt ? new Date(r.submittedAt).toLocaleDateString() : '—';
+    const synced = r.syncedAt ? new Date(r.syncedAt).toLocaleString() : '—';
+    const photoHtml = r.studentPhoto
+      ? `<img src="${r.studentPhoto}" style="width:36px;height:36px;border-radius:8px;object-fit:cover"/>`
+      : `<div class="av" style="width:36px;height:36px;border-radius:8px;font-size:12px">${initials(r.studentName)}</div>`;
     return `<tr>
       <td>${start+i+1}</td>
-      <td><strong>${r.studentName}</strong></td>
-      <td>${r.className}</td>
-      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.assessmentName}</td>
-      <td><strong>${r.score}/${r.maxScore}</strong></td>
-      <td><strong style="color:${pctColor}">${pct}%</strong></td>
-      <td><span class="chip ${isReturned?'co':'cg'}">${isReturned?'Returned':'Submitted'}</span></td>
+      <td>${esc(r.year)}</td>
+      <td>${esc(r.campus)}</td>
+      <td>${esc(r.className)}</td>
+      <td>${esc(r.subjectName)}</td>
+      <td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.lessonName)}</td>
+      <td style="max-width:160px"><span style="display:inline-flex;align-items:center;gap:4px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;display:inline-block">${esc(r.assessmentName)}</span><span class="material-icons" style="font-size:15px;color:#f59e0b;cursor:pointer;flex-shrink:0" title="View Assessment" onclick="openViewModal('assessment','${r.assessmentId}')">info</span></span></td>
+      <td>${photoHtml}</td>
+      <td><strong>${esc(r.studentName)}</strong>${r.permanentId?`<div style="font-size:11px;color:var(--mu);font-weight:700">${r.permanentId}</div>`:''}</td>
+      <td><span class="chip ${isReturned?'co':'cg'}">${isReturned?'RETURNED':'COMPLETED'}</span></td>
+      <td style="font-size:12px;color:var(--mu)">${synced}</td>
+      <td><strong style="color:${pctColor}">${r.score}</strong> / ${r.maxScore}</td>
+      <td style="font-size:12px;color:var(--mu)">${fmtDuration(r.durationSeconds)}</td>
       <td style="font-size:12px;color:var(--mu)">${date}</td>
-      <td><button class="btn-c" style="padding:6px 12px;font-size:12px" onclick="openGradeDetail('${r.id}')">
-        <span class="material-icons" style="font-size:14px">visibility</span> View
-      </button></td>
+      <td><div class="ib" title="View" onclick="openGradeDetail('${r.id}')"><span class="material-icons">visibility</span></div></td>
     </tr>`;
   }).join('');
 
-  // Render pagination
   renderPag('grades', total, tp);
 }
 
