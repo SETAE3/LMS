@@ -152,6 +152,25 @@ select.fs:focus{border-color:var(--gm)}
 .lockbtn:hover{transform:scale(1.1)}
 .lockbtn.locked{background:#fff3e0;color:#e65100}
 .lockbtn.unlocked{background:#e6f4ed;color:var(--gd)}
+/* CLASS DETAIL */
+.linked-info{margin-bottom:20px}
+.linked-info-title{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;margin-bottom:12px}
+.linked-info-title .material-icons{font-size:18px;color:var(--gm)}
+.linked-chips{display:flex;flex-wrap:wrap;gap:8px}
+.linked-chip{background:var(--bg);border:1px solid var(--bo);border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600}
+.cd-tabs{display:flex;gap:26px;border-bottom:1px solid var(--bo);margin-bottom:20px;flex-wrap:wrap}
+.cd-tab{padding:10px 2px;font-size:14px;font-weight:700;color:var(--mu);cursor:pointer;border-bottom:2.5px solid transparent;user-select:none}
+.cd-tab.active{color:var(--tx);border-color:var(--gd)}
+.cd-subj{border:1px solid var(--bo);border-radius:10px;margin-bottom:8px;overflow:hidden}
+.cd-subj-row{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer}
+.cd-subj-toggle{color:var(--gm);cursor:pointer}
+.cd-subj-name{flex:1}
+.cd-lessons{padding:0 14px 12px 40px;display:flex;flex-direction:column;gap:4px}
+.cd-lesson-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px}
+.cd-lesson-row:hover{background:var(--bg)}
+.cd-rightpanel{flex:1;min-width:260px;background:#fff;border:1px solid var(--bo);border-radius:12px;padding:20px;min-height:220px}
+.cd-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:180px;color:var(--mu);gap:10px}
+.cd-empty .material-icons{font-size:40px;opacity:.4}
 .tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
 thead th{padding:11px 13px;text-align:left;font-size:10.5px;font-weight:800;color:var(--mu);background:var(--bg);border-bottom:1px solid var(--bo);white-space:nowrap;user-select:none;text-transform:uppercase;letter-spacing:.5px}
@@ -257,7 +276,7 @@ tbody td{padding:11px 13px;font-size:13px;vertical-align:middle}
 .csd-opt{padding:9px 14px;font-size:12px;cursor:pointer;transition:background .1s;white-space:nowrap;color:var(--tx);display:flex;align-items:center;gap:8px}
 .csd-opt:hover{background:var(--gl);color:var(--gd)}
 .csd-opt.sel{color:var(--gd);font-weight:700;background:#eef8f3}
-.csd-opt.sel::after{content:'✓';margin-left:auto;font-size:11px;color:var(--gm)}
+.csd-opt.sel::after{content:'check';font-family:'Material Icons';margin-left:auto;font-size:15px;color:var(--gm)}
 .csd-sep{height:1px;background:var(--bo);margin:3px 0}
 .mfg .csd{min-width:100%;width:100%}
 .mfg .csd-btn{font-size:13px;padding:10px 12px;border-radius:8px}
@@ -332,10 +351,10 @@ body.theme-rose .modal{background:#fff7f9}
 <!-- LOGIN -->
 <div id="login-screen" style="display:none">
   <div class="ll">
-    <h1>Hi, Welcome back 👋</h1>
+    <h1><span class="material-icons" style="vertical-align:middle;font-size:1.4rem;color:var(--gm)">waving_hand</span> Hi, Welcome back</h1>
     <div class="deco">
       <div class="dc"><div class="cm"><div class="cb" style="height:45%"></div><div class="cb" style="height:70%"></div><div class="cb" style="height:55%"></div><div class="cb" style="height:85%"></div><div class="cb" style="height:60%"></div><div class="cb" style="height:90%"></div></div><div class="db" style="width:70%;margin-top:10px"></div><div class="db s"></div></div>
-      <div class="dc" style="display:flex;flex-direction:column;align-items:center;gap:8px"><span style="font-size:2rem">🏔️</span><div class="db" style="width:80%"></div><div class="db s p"></div></div>
+      <div class="dc" style="display:flex;flex-direction:column;align-items:center;gap:8px"><span class="material-icons" style="font-size:2rem;color:var(--gm)">landscape</span><div class="db" style="width:80%"></div><div class="db s p"></div></div>
       <div class="dc" style="display:flex;flex-direction:column;align-items:center"><div class="pie"></div><div class="db" style="width:75%"></div><div class="db s"></div></div>
     </div>
   </div>
@@ -427,6 +446,29 @@ body.theme-rose .modal{background:#fff7f9}
           <div class="tw"><table><thead><tr><th>#</th><th>Year</th><th>Campus</th><th>Thumbnail</th><th>Code</th><th>QR</th><th>Class</th><th>SMS Class Info.</th><th>Total Students</th><th>Created By</th><th>Created At ↓</th><th>Action</th></tr></thead><tbody id="tb-class"></tbody></table></div>
           <div class="pw2"><div class="pf" id="pf-class" style="width:0"></div></div>
           <div class="pg" id="pg-class"></div>
+        </div>
+      </div>
+
+      <!-- CLASS DETAIL -->
+      <div class="page" id="page-class-detail">
+        <div class="ph"><div><div class="pt" id="cd-title">Selected Class</div><div class="bc"><span style="cursor:pointer" onclick="nav('class-list')">Dashboard</span><span class="material-icons bc-dot">fiber_manual_record</span><span style="cursor:pointer" onclick="nav('class-list')">Class List</span><span class="material-icons bc-dot">fiber_manual_record</span><span class="ac">detail</span></div></div></div>
+        <div class="tc" style="padding:24px">
+          <div class="linked-info">
+            <div class="linked-info-title"><span class="material-icons">link</span>Linked Information</div>
+            <div class="linked-chips" id="cd-linked-chips"></div>
+          </div>
+          <div class="cd-tabs" id="cd-tabs">
+            <div class="cd-tab active" data-tab="info" onclick="classDetailTab('info')">Class Information</div>
+            <div class="cd-tab" data-tab="subjects" onclick="classDetailTab('subjects')">Subjects</div>
+            <div class="cd-tab" data-tab="students" onclick="classDetailTab('students')">Students</div>
+            <div class="cd-tab" data-tab="teacher" onclick="classDetailTab('teacher')">Teacher</div>
+            <div class="cd-tab" data-tab="report" onclick="classDetailTab('report')">Assessment Report</div>
+          </div>
+          <div class="cd-panel" id="cd-panel-info"></div>
+          <div class="cd-panel" id="cd-panel-subjects" style="display:none"></div>
+          <div class="cd-panel" id="cd-panel-students" style="display:none"></div>
+          <div class="cd-panel" id="cd-panel-teacher" style="display:none"></div>
+          <div class="cd-panel" id="cd-panel-report" style="display:none"></div>
         </div>
       </div>
 
@@ -689,7 +731,7 @@ body.theme-rose .modal{background:#fff7f9}
 
           <!-- THEME -->
           <div class="tc" style="padding:24px">
-            <div style="font-size:15px;font-weight:800;margin-bottom:4px">🎨 Theme</div>
+            <div style="font-size:15px;font-weight:800;margin-bottom:4px"><span class="material-icons" style="vertical-align:middle;font-size:18px;color:var(--gm)">palette</span> Theme</div>
             <div style="font-size:13px;color:var(--mu);margin-bottom:20px">Choose how the back office looks</div>
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px" id="theme-grid">
               <!-- Filled by JS -->
@@ -698,7 +740,7 @@ body.theme-rose .modal{background:#fff7f9}
 
           <!-- ACCENT COLOR -->
           <div class="tc" style="padding:24px">
-            <div style="font-size:15px;font-weight:800;margin-bottom:4px">🌈 Accent Color</div>
+            <div style="font-size:15px;font-weight:800;margin-bottom:4px"><span class="material-icons" style="vertical-align:middle;font-size:18px;color:var(--gm)">colorize</span> Accent Color</div>
             <div style="font-size:13px;color:var(--mu);margin-bottom:20px">Pick the primary color used throughout the app</div>
             <div style="display:flex;gap:12px;flex-wrap:wrap" id="accent-grid">
               <!-- Filled by JS -->
@@ -707,7 +749,7 @@ body.theme-rose .modal{background:#fff7f9}
 
           <!-- SIDEBAR WIDTH -->
           <div class="tc" style="padding:24px">
-            <div style="font-size:15px;font-weight:800;margin-bottom:4px">📐 Layout</div>
+            <div style="font-size:15px;font-weight:800;margin-bottom:4px"><span class="material-icons" style="vertical-align:middle;font-size:18px;color:var(--gm)">aspect_ratio</span> Layout</div>
             <div style="font-size:13px;color:var(--mu);margin-bottom:20px">Adjust the sidebar width</div>
             <div style="display:flex;gap:10px">
               <button class="layout-btn" onclick="setSidebarWidth('compact')" data-w="compact">Compact <small>220px</small></button>
@@ -718,7 +760,7 @@ body.theme-rose .modal{background:#fff7f9}
 
           <!-- FONT SIZE -->
           <div class="tc" style="padding:24px">
-            <div style="font-size:15px;font-weight:800;margin-bottom:4px">🔠 Font Size</div>
+            <div style="font-size:15px;font-weight:800;margin-bottom:4px"><span class="material-icons" style="vertical-align:middle;font-size:18px;color:var(--gm)">format_size</span> Font Size</div>
             <div style="font-size:13px;color:var(--mu);margin-bottom:20px">Adjust the base font size</div>
             <div style="display:flex;gap:10px">
               <button class="layout-btn" onclick="setFontSize('small')" data-fs="small">Small <small>13px</small></button>
@@ -1053,7 +1095,7 @@ function initApp(){
   const av = document.getElementById('user-avatar');
   if(av) av.textContent = (CURRENT_USER?.displayName||'?')[0].toUpperCase();
   const badge = document.getElementById('user-role-badge');
-  if(badge) badge.textContent = isAdmin() ? '👑 Admin' : '👤 Teacher';
+  if(badge) badge.innerHTML = isAdmin() ? '<span class="material-icons" style="font-size:14px;vertical-align:middle">admin_panel_settings</span> Admin' : '<span class="material-icons" style="font-size:14px;vertical-align:middle">person</span> Teacher';
   ['class','subject','lesson','assessment','question','student'].forEach(t=>renderT(t));
   refreshFilters();
   // Apply saved language on load
@@ -1075,6 +1117,7 @@ function nav(pid, el){
   if(pid==='teacher-list'){ renderTeacherList(); }
   if(pid==='settings'){ buildSettingsPage(); }
   if(pid==='question-wizard'){ qwizInit(); }
+  if(pid==='class-detail'){ renderClassDetail(); }
   refreshFilters();
 }
 
@@ -1220,7 +1263,7 @@ function rowHTML(type,r,n){
   const delBtn  = (canAct && type!=='question') ? `<div class="ib del" title="Delete" onclick="confirmDel('${type}','${r.id}','${esc(r.name||r.username||'')}')"><span class="material-icons">delete</span></div>` : '';
   const linkBtn = type==='class' ? `<div class="ib" title="Copy Class Link" onclick="copyClassLink('${r.id}')"><span class="material-icons">link</span></div>` : '';
   const classCopyBtn = type==='class' ? `<div class="ib" title="Duplicate Class" onclick="duplicateClass('${r.id}')"><span class="material-icons">content_copy</span></div>` : '';
-  const classViewBtn = type==='class' ? `<div class="ib" title="View" onclick="openViewModal('class','${r.id}')"><span class="material-icons">visibility</span></div>` : '';
+  const classViewBtn = type==='class' ? `<div class="ib" title="View" onclick="openClassDetail('${r.id}')"><span class="material-icons">visibility</span></div>` : '';
   const ac=`<div class="ab">${viewBtn}${classViewBtn}${qManageBtn}${copyBtn}${linkBtn}${classCopyBtn}${editBtn}${delBtn}</div>`;
   if(type==='class')      return`<tr><td>${n}</td><td>${r.year||'—'}</td><td>${r.campus||'—'}</td><td><div class="thumbi"><span class="material-icons">image</span></div></td><td><span class="code">${r.code||'—'}</span></td><td><button class="qrb" onclick="showQR('${esc(r.code||r.id)}','${esc(r.name)}')"><span class="material-icons">qr_code_2</span></button></td><td><strong>${r.name}</strong></td><td><span class="chip ${r.smsInfo==='Active'?'cg':'co'}">${r.smsInfo||'Active'}</span></td><td><strong>${r.totalStudents||0}</strong></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
   if(type==='subject')    return`<tr><td>${n}</td><td>${r.className||'—'}</td><td><strong>${r.name}</strong></td><td>${r.createdBy||'Admin'}</td><td style="color:var(--mu);font-size:12px">${r.createdAt||'—'}</td><td>${ac}</td></tr>`;
@@ -1246,7 +1289,7 @@ function rowHTML(type,r,n){
       </td>
       <td>
         <div class="vs-wrap">
-          <span class="chip ${r.validState==='Valid'?'cg':r.validState==='Invalid'?'cr':'co'}">${r.validState==='Valid'?'✓ Complete':r.validState||'Pending'}</span>
+          <span class="chip ${r.validState==='Valid'?'cg':r.validState==='Invalid'?'cr':'co'}">${r.validState==='Valid'?'<span class="material-icons" style="font-size:13px;vertical-align:middle">check_circle</span> Complete':r.validState||'Pending'}</span>
           ${liveBtn}
         </div>
       </td>
@@ -1376,6 +1419,11 @@ const FORMS={
     {k:'email',   l:'Email Address',t:'email',ph:'e.g. sophea@school.edu'},
     {k:'password',l:'Password',    t:'pwfield',req:true,ph:'Minimum 6 characters'},
     {k:'classId', l:'Assign to Class',t:'ref',ref:'classs',lk:'name',req:true},
+    {k:'shift',   l:'Shift',       t:'select',opts:['MORNING','AFTERNOON']},
+    {k:'permanentId',l:'Permanent ID',t:'text',ph:'e.g. PI025-0003756'},
+    {k:'gender',  l:'Gender',      t:'select',opts:['Male','Female']},
+    {k:'dob',     l:'Date of Birth',t:'date'},
+    {k:'photo',   l:'Photo',       t:'imgupload',ph:'Optional: a photo of the student'},
     {k:'status',  l:'Account Status',t:'select',opts:['Active','Inactive','Suspended']},
   ]},
 };
@@ -1445,7 +1493,7 @@ function buildForm(type,data){
       html+=`<textarea id="mf-${f.k}" class="richtext-field">${data[f.k]||''}</textarea>`;
       postFills.push({type:'richtext',id:'mf-'+f.k});
       if(type==='question' && f.k==='title'){
-        html+=`<button type="button" onclick="insertBlank('mf-${f.k}')" style="margin-top:6px;font-family:var(--f);font-size:12px;border:1.5px dashed var(--bo);border-radius:7px;padding:5px 12px;cursor:pointer;color:var(--mu);background:none">✎ Insert Blank <small style="font-weight:400">(for Gap Fill questions)</small></button>`;
+        html+=`<button type="button" onclick="insertBlank('mf-${f.k}')" style="margin-top:6px;font-family:var(--f);font-size:12px;border:1.5px dashed var(--bo);border-radius:7px;padding:5px 12px;cursor:pointer;color:var(--mu);background:none;display:inline-flex;align-items:center;gap:4px"><span class="material-icons" style="font-size:14px">edit</span>Insert Blank <small style="font-weight:400">(for Gap Fill questions)</small></button>`;
       }
     } else if(f.t==='textarea'){
       html+=`<textarea id="mf-${f.k}" placeholder="${f.ph||''}">${data[f.k]||''}</textarea>`;
@@ -1528,7 +1576,7 @@ function renderOptBuilder(existingOpts, existingAnswer){
     : (ro ? ['True','False'] : ['','','','']);
   // Restore saved correct answer index, default 0
   corIdx = (existingAnswer !== undefined && existingAnswer !== null) ? parseInt(existingAnswer) : 0;
-  w.innerHTML=`<div class="mfg"><label>${qt==='Dropdown'?'Dropdown Options':'Options'} <small style="font-weight:400;text-transform:none">(click ✓ to mark correct)</small></label><div class="opt-wrap" id="ow">
+  w.innerHTML=`<div class="mfg"><label>${qt==='Dropdown'?'Dropdown Options':'Options'} <small style="font-weight:400;text-transform:none">(click the check mark to mark correct)</small></label><div class="opt-wrap" id="ow">
     ${opts.map((o,i)=>`<div class="or">${ro?`<input type="text" value="${o}" readonly style="background:var(--bg)"/>`:`<input type="text" id="oo-${i}" value="${o}" placeholder="Option ${i+1}"/>`}<div class="oc${i===corIdx?' sel':''}" onclick="setC(${i})"><span class="material-icons">check</span></div></div>`).join('')}
   </div>${!ro?`<button type="button" onclick="addOpt()" style="margin-top:7px;font-family:var(--f);font-size:12px;border:1.5px dashed var(--bo);border-radius:7px;padding:5px 12px;cursor:pointer;color:var(--mu);background:none">+ Add Option</button>`:''}</div>`;
 }
@@ -1553,7 +1601,7 @@ function renderGapWordsUI(w){
   const liveText = ed ? ed.getContent({format:'text'}) : (document.getElementById('mf-title')?.value||'');
   const blanks=countBlanks(liveText);
   const nCorrect=gapWords.filter(g=>g.correct).length;
-  w.innerHTML=`<div class="mfg"><label>Word Bank <small style="font-weight:400;text-transform:none">— check ✓ for correct answers, added in the same order the blanks appear in the text</small></label>
+  w.innerHTML=`<div class="mfg"><label>Word Bank <small style="font-weight:400;text-transform:none">— check the mark for correct answers, added in the same order the blanks appear in the text</small></label>
    <div style="font-size:11px;margin-bottom:6px;font-weight:700;color:${blanks && nCorrect===blanks?'var(--gd)':'#e65100'}">${blanks} blank(s) in question text · ${nCorrect} correct word(s) set${blanks&&nCorrect!==blanks?' — these must match':''}</div>
    <div class="opt-wrap" id="gw">
     ${gapWords.map((g,i)=>`<div class="or"><input type="text" id="gwt-${i}" value="${(g.text||'').replace(/"/g,'&quot;')}" placeholder="Word ${i+1}" oninput="gapWords[${i}].text=this.value"/><div class="oc${g.correct?' sel':''}" onclick="toggleGapCorrect(${i})" title="Mark as a correct blank answer"><span class="material-icons">check</span></div><div class="oc" style="color:#e53935" onclick="removeGapWord(${i})" title="Remove"><span class="material-icons">close</span></div></div>`).join('')}
@@ -1756,7 +1804,7 @@ function qwizRenderEditor(q){
     </div>
     <div class="mfg"><label>Question</label>
       <textarea id="mf-title" class="richtext-field">${q.title||''}</textarea>
-      <button type="button" onclick="insertBlank('mf-title')" style="margin-top:6px;font-family:var(--f);font-size:12px;border:1.5px dashed var(--bo);border-radius:7px;padding:5px 12px;cursor:pointer;color:var(--mu);background:none">✎ Insert Blank <small style="font-weight:400">(for Gap Fill questions)</small></button>
+      <button type="button" onclick="insertBlank('mf-title')" style="margin-top:6px;font-family:var(--f);font-size:12px;border:1.5px dashed var(--bo);border-radius:7px;padding:5px 12px;cursor:pointer;color:var(--mu);background:none;display:inline-flex;align-items:center;gap:4px"><span class="material-icons" style="font-size:14px">edit</span>Insert Blank <small style="font-weight:400">(for Gap Fill questions)</small></button>
     </div>
     <div class="img-upload-progress" id="imgprog-image"><div class="bar" id="imgprogbar-image" style="width:0%"></div></div>
     ${existingImg?`<div class="img-preview" id="imgprev-image"><img src="${existingImg}" alt=""/><button class="img-remove" onclick="removeImg('image')" type="button">×</button></div>`:`<div id="imgprev-image"></div>`}
@@ -1955,6 +2003,7 @@ async function saveModal(again){
       toast((editId?'Updated':'Created')+' '+form.title+'!');
       editId=null;
     }
+    if(document.getElementById('page-class-detail')?.classList.contains('active')) renderClassDetailActiveTab();
   } catch(e) {
     toast('Save failed: '+e.message,'err');
     console.error(e);
@@ -1994,6 +2043,258 @@ function delQuestion(btn){
   confirmDel('question', id, 'this question');
 }
 
+// ══════════════════════════════════════════════════════
+// ── CLASS DETAIL PAGE (tabs: info / subjects / students / teacher / report)
+// ══════════════════════════════════════════════════════
+let cdClassId=null, cdExpandedSubjects=new Set(), cdRightSelection=null;
+function openClassDetail(classId){
+  cdClassId = classId;
+  cdExpandedSubjects = new Set();
+  cdRightSelection = null;
+  nav('class-detail');
+}
+function renderClassDetail(){
+  const c = DB.get('classs').find(x=>x.id===cdClassId);
+  if(!c){ toast('Class not found','err'); nav('class-list'); return; }
+  document.getElementById('cd-title').textContent = 'Selected Class : '+c.name;
+  document.getElementById('cd-linked-chips').innerHTML =
+    `<div class="linked-chip">Year : ${esc(c.year||'—')}</div>`+
+    `<div class="linked-chip">Campus : ${esc(c.campus||'—')}</div>`+
+    `<div class="linked-chip">Class : ${esc(c.name||'—')}</div>`;
+  classDetailTab('info');
+}
+function renderClassDetailActiveTab(){
+  const active = document.querySelector('#cd-tabs .cd-tab.active');
+  if(active) classDetailTab(active.dataset.tab);
+}
+function classDetailTab(tab){
+  document.querySelectorAll('#cd-tabs .cd-tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===tab));
+  ['info','subjects','students','teacher','report'].forEach(t=>{
+    const el=document.getElementById('cd-panel-'+t);
+    if(el) el.style.display = (t===tab) ? '' : 'none';
+  });
+  if(tab==='info') renderCdInfo();
+  else if(tab==='subjects') renderCdSubjects();
+  else if(tab==='students') renderCdStudents();
+  else if(tab==='teacher') renderCdTeacher();
+  else if(tab==='report') renderCdReport();
+}
+function renderCdInfo(){
+  const c = DB.get('classs').find(x=>x.id===cdClassId); if(!c) return;
+  const teachers = DB.get('teachers').filter(t=>(t.classIds||[]).includes(cdClassId));
+  const teacherNames = teachers.map(t=>t.name).join(', ') || '—';
+  document.getElementById('cd-panel-info').innerHTML = `
+    <div style="display:flex;gap:32px;flex-wrap:wrap">
+      <div style="width:240px;height:240px;border-radius:14px;overflow:hidden;background:var(--gl);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        ${c.thumbnail?`<img src="${c.thumbnail}" style="width:100%;height:100%;object-fit:cover"/>`:`<span class="material-icons" style="font-size:64px;color:var(--gm)">school</span>`}
+      </div>
+      <div style="flex:1;min-width:240px">
+        <div style="font-size:1.4rem;font-weight:800;margin-bottom:18px">Class : ${esc(c.name)}</div>
+        <div style="display:flex;flex-direction:column;gap:14px;font-size:14px">
+          <div style="display:flex;align-items:center;gap:8px"><strong>Code :</strong> ${c.code||'—'} <button class="qrb" onclick="showQR('${esc(c.code||c.id)}','${esc(c.name)}')"><span class="material-icons">qr_code_2</span></button></div>
+          <div><strong>Total Student :</strong> ${c.totalStudents||0}</div>
+          <div><strong>Teacher :</strong> ${esc(teacherNames)}</div>
+          <div><strong>Created at :</strong> ${c.createdAt||'—'}</div>
+        </div>
+      </div>
+    </div>`;
+}
+function renderCdSubjects(){
+  const subs = DB.get('subjects').filter(s=>s.classId===cdClassId);
+  const listHtml = subs.length ? subs.map(s=>{
+    const lessons = DB.get('lessons').filter(l=>l.subjectId===s.id);
+    const expanded = cdExpandedSubjects.has(s.id);
+    return `<div class="cd-subj">
+      <div class="cd-subj-row">
+        <span class="material-icons cd-subj-toggle" onclick="cdToggleSubject('${s.id}')">${expanded?'remove_circle_outline':'add_circle_outline'}</span>
+        <div class="cd-subj-name" onclick="cdToggleSubject('${s.id}')">
+          <strong>Subject : ${esc(s.name)}</strong>
+          <div style="font-size:11px;color:var(--mu)">${lessons.length} Lessons</div>
+        </div>
+        <div class="ib del" title="Remove Subject" onclick="confirmDel('subject','${s.id}','${esc(s.name)}')"><span class="material-icons">delete</span></div>
+      </div>
+      ${expanded ? `<div class="cd-lessons">${lessons.length?lessons.map(l=>{
+        const asses = DB.get('assessments').filter(a=>a.lessonId===l.id);
+        return `<div class="cd-lesson-row" onclick="cdSelectLesson('${l.id}')">
+          <span class="material-icons" style="font-size:16px">description</span>
+          <span>${esc(l.name)}</span>
+          <span style="margin-left:auto;font-size:11px;color:var(--mu)">${asses.length} Assessment${asses.length!==1?'s':''}</span>
+        </div>`;
+      }).join('') : '<div style="font-size:12px;color:var(--mu);padding:8px 0">No lessons yet.</div>'}</div>` : ''}
+    </div>`;
+  }).join('') : '<p style="color:var(--mu);text-align:center;padding:20px">No subjects yet.</p>';
+
+  document.getElementById('cd-panel-subjects').innerHTML = `
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+      <button class="qwiz-toolbtn" onclick="openAddExistingSubject()"><span class="material-icons" style="font-size:16px">playlist_add</span>Add Existing Subject to Class</button>
+      <button class="qwiz-toolbtn" onclick="openCreateInClass('subject',{classId:cdClassId})"><span class="material-icons" style="font-size:16px">menu_book</span>Create New Subject</button>
+      <button class="qwiz-toolbtn" onclick="openCreateInClass('lesson',{classId:cdClassId})"><span class="material-icons" style="font-size:16px">note_add</span>Create Lesson</button>
+      <button class="qwiz-toolbtn" onclick="cdCreateLessonContent()"><span class="material-icons" style="font-size:16px">videocam</span>Create Lesson Content</button>
+      <button class="qwiz-toolbtn" onclick="openCreateInClass('assessment',{classId:cdClassId})"><span class="material-icons" style="font-size:16px">assignment</span>Create Assessment</button>
+    </div>
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex:1;min-width:280px">${listHtml}</div>
+      <div class="cd-rightpanel" id="cd-subj-right">${cdRenderRightPanel()}</div>
+    </div>`;
+}
+function cdToggleSubject(id){
+  if(cdExpandedSubjects.has(id)) cdExpandedSubjects.delete(id); else cdExpandedSubjects.add(id);
+  renderCdSubjects();
+}
+function cdSelectLesson(lessonId){
+  cdRightSelection = {type:'lesson', id:lessonId};
+  const el=document.getElementById('cd-subj-right'); if(el) el.innerHTML=cdRenderRightPanel();
+}
+function cdRenderRightPanel(){
+  if(!cdRightSelection) return `<div class="cd-empty"><span class="material-icons">quiz</span><p>Select Lesson or Assessment to view</p></div>`;
+  if(cdRightSelection.type==='lesson'){
+    const l=DB.get('lessons').find(x=>x.id===cdRightSelection.id);
+    if(!l) return `<div class="cd-empty"><span class="material-icons">quiz</span><p>Select Lesson or Assessment to view</p></div>`;
+    const asses=DB.get('assessments').filter(a=>a.lessonId===l.id);
+    return `<div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <strong style="font-size:15px">Lesson : ${esc(l.name)}</strong>
+        <div class="ib" title="Edit Lesson" onclick="openEdit('lesson','${l.id}')"><span class="material-icons">edit</span></div>
+      </div>
+      <div style="font-size:13px;color:var(--mu);margin-bottom:14px" class="tinymce-content">${l.content||'<em>No content yet.</em>'}</div>
+      <div style="font-weight:700;font-size:12px;color:var(--mu);text-transform:uppercase;margin-bottom:8px">Assessments</div>
+      ${asses.length ? asses.map(a=>`<div class="cd-lesson-row" onclick="qwizOpenForAssessment('${a.id}')"><span class="material-icons" style="font-size:16px">assignment</span><span>${esc(a.name)}</span></div>`).join('') : '<div style="font-size:12px;color:var(--mu)">No assessments yet.</div>'}
+    </div>`;
+  }
+  return `<div class="cd-empty"><span class="material-icons">quiz</span><p>Select Lesson or Assessment to view</p></div>`;
+}
+function cdCreateLessonContent(){
+  if(cdRightSelection && cdRightSelection.type==='lesson') openEdit('lesson', cdRightSelection.id);
+  else toast('Select a lesson on the left first, then click here to edit its content','err');
+}
+function openCreateInClass(type, extra){
+  editId=null; curType=type;
+  document.getElementById('mtitle').textContent='Create New '+FORMS[type].title;
+  document.getElementById('msave').textContent='Create';
+  document.getElementById('msave').style.background='';
+  document.getElementById('msave').onclick=()=>saveModal(false);
+  document.getElementById('mftr').style.display='flex';
+  document.getElementById('msaveagain').style.display='none';
+  buildForm(type, extra||{});
+  document.getElementById('overlay').classList.add('open');
+}
+function openAddExistingSubject(){
+  const allSubs = DB.get('subjects').filter(s=>s.classId!==cdClassId);
+  document.getElementById('vm-title').textContent='Add Existing Subject to Class';
+  document.getElementById('vm-body').innerHTML = allSubs.length ? allSubs.map(s=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border:1px solid var(--bo);border-radius:8px;margin-bottom:8px">
+      <div><strong>${esc(s.name)}</strong><div style="font-size:11px;color:var(--mu)">Currently in: ${esc(s.className||'Unassigned')}</div></div>
+      <button class="btn-sv2" onclick="addExistingSubjectToClass('${s.id}')">Add</button>
+    </div>`).join('') : '<p style="color:var(--mu);text-align:center;padding:20px">No other subjects available.</p>';
+  const ov=document.getElementById('view-overlay');
+  ov.style.display='flex';
+  setTimeout(()=>ov.classList.add('open'),10);
+}
+async function addExistingSubjectToClass(subjectId){
+  const s = DB.get('subjects').find(x=>x.id===subjectId);
+  const c = DB.get('classs').find(x=>x.id===cdClassId);
+  if(!s||!c) return;
+  try{
+    await dbSet('subjects', subjectId, {...s, classId:cdClassId, className:c.name});
+    await loadAll();
+    toast('Subject added to '+c.name);
+    document.getElementById('view-overlay').classList.remove('open');
+    setTimeout(()=>{ document.getElementById('view-overlay').style.display='none'; },300);
+    renderCdSubjects();
+  } catch(e){ toast('Failed: '+e.message,'err'); }
+}
+function renderCdStudents(){
+  const studs = DB.get('students').filter(s=>s.classId===cdClassId);
+  const rows = studs.length ? studs.map((s,i)=>`<tr>
+    <td>${i+1}</td>
+    <td><span class="chip cb2">${s.shift||'MORNING'}</span></td>
+    <td>${s.photo?`<img src="${s.photo}" style="width:36px;height:36px;border-radius:50%;object-fit:cover"/>`:`<div class="av" style="width:36px;height:36px;font-size:13px">${esc((s.name||'?')[0].toUpperCase())}</div>`}</td>
+    <td>${s.permanentId||'—'}</td>
+    <td><strong>${esc(s.name)}</strong></td>
+    <td>${s.gender||'—'}</td>
+    <td>${s.email||'—'}</td>
+    <td>${s.dob||'—'}</td>
+    <td><div class="ab">
+      <div class="ib del" title="Remove from class" onclick="confirmDel('student','${s.id}','${esc(s.name)}')"><span class="material-icons">delete</span></div>
+      <div class="ib" title="Assign Shift" onclick="cdAssignShift('${s.id}')"><span class="material-icons">schedule</span></div>
+    </div></td>
+  </tr>`).join('') : `<tr><td colspan="9"><div class="nd-data"><span class="material-icons">inbox</span><p>No students in this class</p></div></td></tr>`;
+  document.getElementById('cd-panel-students').innerHTML =
+    `<div class="tw"><table><thead><tr><th>#</th><th>Shift</th><th>Photo</th><th>Permanent ID</th><th>Name</th><th>Gender</th><th>Email</th><th>Date of birth</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+async function cdAssignShift(studentId){
+  const s = DB.get('students').find(x=>x.id===studentId);
+  if(!s) return;
+  const next = s.shift==='MORNING' ? 'AFTERNOON' : 'MORNING';
+  try{ await dbSet('students', studentId, {...s, shift:next}); await loadAll(); toast('Shift set to '+next); renderCdStudents(); }
+  catch(e){ toast('Failed: '+e.message,'err'); }
+}
+function renderCdTeacher(){
+  const assigned = DB.get('teachers').filter(t=>(t.classIds||[]).includes(cdClassId));
+  const unassigned = DB.get('teachers').filter(t=>!(t.classIds||[]).includes(cdClassId));
+  document.getElementById('cd-panel-teacher').innerHTML = `
+    <div style="margin-bottom:22px">
+      <div style="font-weight:700;font-size:12px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Assigned Teachers</div>
+      ${assigned.length ? assigned.map(t=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border:1px solid var(--bo);border-radius:10px;margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:10px"><div class="av" style="width:32px;height:32px;font-size:12px">${esc((t.name||'?')[0].toUpperCase())}</div><strong>${esc(t.name)}</strong><span style="font-size:12px;color:var(--mu)">${esc(t.email||'')}</span></div>
+        <div class="ib del" title="Unassign" onclick="cdUnassignTeacher('${t.id}')"><span class="material-icons">person_remove</span></div>
+      </div>`).join('') : '<p style="color:var(--mu);font-size:13px">No teacher assigned yet.</p>'}
+    </div>
+    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+      <div class="fbox" style="max-width:280px"><label>Assign a Teacher</label><div class="csd" id="cd-assign-teacher"></div></div>
+      <button class="btn-c" onclick="cdAssignTeacher()"><span class="material-icons">person_add</span>Assign</button>
+    </div>`;
+  fillRef('cd-assign-teacher', unassigned, 'Select Teacher');
+}
+async function cdAssignTeacher(){
+  const tid = csdVal('cd-assign-teacher');
+  if(!tid){ toast('Pick a teacher first','err'); return; }
+  const t = DB.get('teachers').find(x=>x.id===tid); if(!t) return;
+  const classIds = [...(t.classIds||[]), cdClassId];
+  try{ await dbSet('teachers', tid, {...t, classIds}); await loadAll(); toast('Teacher assigned'); renderCdTeacher(); }
+  catch(e){ toast('Failed: '+e.message,'err'); }
+}
+async function cdUnassignTeacher(tid){
+  const t = DB.get('teachers').find(x=>x.id===tid); if(!t) return;
+  const classIds = (t.classIds||[]).filter(id=>id!==cdClassId);
+  try{ await dbSet('teachers', tid, {...t, classIds}); await loadAll(); toast('Teacher unassigned'); renderCdTeacher(); }
+  catch(e){ toast('Failed: '+e.message,'err'); }
+}
+function renderCdReport(){
+  const c = DB.get('classs').find(x=>x.id===cdClassId); if(!c) return;
+  const subFilter = csdVal('cd-report-subject');
+  const asses = DB.get('assessments').filter(a=>a.classId===cdClassId && (!subFilter || a.subjectId===subFilter));
+  const groups = {};
+  asses.forEach(a=>{
+    const month = (a.date||a.createdAt||'').slice(0,7) || 'Unknown';
+    const key = a.subjectId+'|'+month;
+    if(!groups[key]) groups[key] = {subjectId:a.subjectId, subjectName:a.subjectName, month, total:0, completed:0, assessmentIds:[]};
+    groups[key].total++;
+    if(a.validState==='Valid') groups[key].completed++;
+    groups[key].assessmentIds.push(a.id);
+  });
+  const rows = Object.values(groups).map(g=>{
+    const submissions = DB.get('submissions').filter(s=>g.assessmentIds.includes(s.assessmentId));
+    const submittedCount = new Set(submissions.map(s=>s.studentId)).size;
+    return `<tr><td>${esc(c.name)}</td><td>${esc(g.subjectName||'—')}</td><td>${g.month}</td><td>${g.total}</td><td>${g.completed}</td><td>${submittedCount}</td><td><div class="ib" title="View"><span class="material-icons">visibility</span></div></td></tr>`;
+  }).join('');
+  document.getElementById('cd-panel-report').innerHTML = `
+    <div class="fpanel" style="border:1px solid var(--bo);border-radius:12px;margin-bottom:16px">
+      <div class="fpanel-title">Filter</div>
+      <div class="fpanel-row">
+        <div class="fbox" style="max-width:260px"><label>Subject</label><div class="csd" id="cd-report-subject"></div></div>
+        <div class="freset" title="Reset filters" onclick="cdResetReportFilter()"><span class="material-icons">refresh</span></div>
+      </div>
+    </div>
+    <div class="tw"><table><thead><tr><th>Class</th><th>Subject</th><th>Month</th><th>Total Assessments</th><th>Total Setup Completed</th><th>Submitted</th><th>Action</th></tr></thead><tbody>${rows||'<tr><td colspan="7"><div class="nd-data"><span class="material-icons">inbox</span><p>No assessments found</p></div></td></tr>'}</tbody></table></div>`;
+  fillRef('cd-report-subject', DB.get('subjects').filter(s=>s.classId===cdClassId), 'All Subjects');
+  csdOn('cd-report-subject', ()=>renderCdReport());
+}
+function cdResetReportFilter(){
+  const el=document.getElementById('cd-report-subject');
+  if(el) el.setAttribute('data-val','');
+  renderCdReport();
+}
 async function toggleAssessmentLive(id){
   const a=DB.get('assessments').find(x=>x.id===id); if(!a) return;
   const updated={...a, live:!a.live};
@@ -2068,6 +2369,7 @@ async function doDel(type,id){
     saveBtn.disabled=false;
     saveBtn.style.background='';
     saveBtn.onclick=saveModal;
+    if(document.getElementById('page-class-detail')?.classList.contains('active')) renderClassDetailActiveTab();
   }
 }
 
@@ -2283,9 +2585,9 @@ async function openGradeDetail(subId){
     return `<div style="background:#fff;border:1px solid var(--bo);border-radius:10px;padding:16px;margin-bottom:12px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <span style="font-size:12px;font-weight:700;color:var(--mu)">Q${i+1} · ${q.points} pts · ${q.type}</span>
-        ${isMCQ?`<span style="font-size:13px;font-weight:700;color:${isCorrect?'var(--gd)':'#e53935'}">${isCorrect?'✓ Correct':'✗ Wrong'}</span>`:''}
-        ${isGap?`<span style="font-size:13px;font-weight:700;color:${gapAllCorrect?'var(--gd)':'#e65100'}">${gapAllCorrect?'✓ All correct':'Partial credit'}</span>`:''}
-        ${(!isMCQ&&!isGap)?'<span style="font-size:12px;color:#f9a825;font-weight:700">✏ Manual Grade</span>':''}
+        ${isMCQ?`<span style="font-size:13px;font-weight:700;color:${isCorrect?'var(--gd)':'#e53935'}"><span class="material-icons" style="font-size:15px;vertical-align:middle">${isCorrect?'check_circle':'cancel'}</span> ${isCorrect?'Correct':'Wrong'}</span>`:''}
+        ${isGap?`<span style="font-size:13px;font-weight:700;color:${gapAllCorrect?'var(--gd)':'#e65100'}"><span class="material-icons" style="font-size:15px;vertical-align:middle">${gapAllCorrect?'check_circle':'rule'}</span> ${gapAllCorrect?'All correct':'Partial credit'}</span>`:''}
+        ${(!isMCQ&&!isGap)?'<span style="font-size:12px;color:#f9a825;font-weight:700"><span class="material-icons" style="font-size:14px;vertical-align:middle">edit</span> Manual Grade</span>':''}
       </div>
       <div style="font-size:14px;font-weight:600;margin-bottom:12px;font-family:var(--font);line-height:1.6">${titleText}</div>
       ${ansHtml}
@@ -2313,7 +2615,7 @@ async function openGradeDetail(subId){
       </div>
     </div>
     ${isReturned?`<div style="background:#fff3e0;border-left:4px solid #e65100;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:13px">
-      <strong>⚠ Returned</strong> — Teacher note: ${sub.returnNote||'(no note)'}</div>`:''}
+      <strong><span class="material-icons" style="font-size:15px;vertical-align:middle;color:#e65100">warning_amber</span> Returned</strong> — Teacher note: ${sub.returnNote||'(no note)'}</div>`:''}
     <div style="font-size:14px;font-weight:700;margin-bottom:12px">Answer Review</div>
     ${qHtml}
     <div style="margin-top:16px">
@@ -3078,9 +3380,9 @@ const KM = {
   'Dropdown':'បញ្ជីធាតុជ្រើសរើស',
   'Gap Fill':'បំពេញចន្លោះ',
   'Mixed':'លាយ',
-  '✓ Correct':'✓ ត្រូវ',
-  '✗ Wrong':'✗ មិនត្រូវ',
-  '✏ Manual Grade':'✏ ពិន្ទុដោយដៃ',
+  'Correct':'ត្រូវ',
+  'Wrong':'មិនត្រូវ',
+  'Manual Grade':'ពិន្ទុដោយដៃ',
   'Q1':'Q1','Q2':'Q2','Q3':'Q3',
 };
 
